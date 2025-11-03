@@ -544,20 +544,29 @@ button[disabled],
   align-items: center;
   gap: 12px;
   margin-bottom: 20px;
+  margin-left: -2px; /* compensate for border width */
+  margin-right: -2px; /* keeps it perfectly aligned with tabs */
 }
 
 .play-row .btn-play {
-  flex: 0 0 var(--main-icon-size); /* fixed width */
+  flex: 0 0 var(--main-icon-size);
 }
 
 .play-row input.word-input {
-  flex: 1;                        /* expand to fill remaining space */
-  min-width: 0;                   /* allow shrinking properly */
+  flex: 1;
+  min-width: 0;
+  margin-right: 0;
+  border-radius: var(--ui-radius);
+  border: var(--ui-border) solid var(--muted-2);
+  box-sizing: border-box;
 }
 
 .play-row .result {
-  flex: 0 0 auto;                 /* keep result text compact */
+  flex: 0 0 auto;
+  max-width: 100px;
+  text-align: right;
 }
+
 
 /* --- Responsive --- */
 /* --- Responsive --- */
