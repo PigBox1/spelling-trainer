@@ -194,8 +194,7 @@ button[disabled],
   background: rgba(244,67,54,0.08);
 }
 
-/* --- Difficulty color logic --- */
-/* Easy = Green, Advanced = Yellow, Proficient = Red */
+/* Difficulty colors */
 .segmented button[data-val="easy"].on {
   border-color: var(--accent-green);
   color: var(--accent-green);
@@ -213,7 +212,6 @@ button[disabled],
   color: var(--accent-red);
   background: rgba(244,67,54,0.08);
 }
-
   
 .auto-btn.checked {
   border-color: var(--accent-green);
@@ -529,8 +527,8 @@ button[disabled],
               <div class="label">Mode</div>
               <div class="control">
                 <div class="segmented" id="segMode">
-                  <button data-val="normal" type="button">Normal</button>
                   <button data-val="easy" type="button">Easy</button>
+                  <button data-val="normal" type="button">Normal</button>
                   <button data-val="hardcore" type="button">Hardcore</button>
                 </div>
               </div>
