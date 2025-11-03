@@ -53,11 +53,13 @@ html, body {
 
 /* --- Header & Navigation --- */
 header {
-  display: flex;
+  display: grid;
+  grid-template-columns: 1fr auto;
   align-items: center;
-  justify-content: space-between;
-  margin-bottom: 12px;
+  gap: 12px;
+  margin-bottom: 18px;
 }
+
 
 header h1 {
   font-size: 18px;
@@ -540,17 +542,25 @@ button[disabled],
 }
 
 .play-row {
-  display: flex;
+  display: grid;
+  grid-template-columns: 1fr auto; /* same columns as header */
   align-items: center;
   gap: 12px;
   margin-bottom: 20px;
-  margin-left: -2px; /* compensate for border width */
-  margin-right: -2px; /* keeps it perfectly aligned with tabs */
+  width: 100%;
+  /* remove any negative margins here if present */
 }
+
 
 .play-row .btn-play {
   flex: 0 0 var(--main-icon-size);
 }
+
+input.word-input {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
 
 .play-row input.word-input {
   flex: 1;
@@ -566,6 +576,16 @@ button[disabled],
   max-width: 100px;
   text-align: right;
 }
+
+.play-row .play-controls {
+  grid-column: 2;             /* put the whole control group in the right column */
+  display: flex;              /* arrange play button + input horizontally */
+  gap: 12px;
+  align-items: center;
+  justify-content: flex-start; /* left-align inside the right column */
+  width: 100%;
+}
+
 
 
 /* --- Responsive --- */
@@ -611,10 +631,13 @@ button[disabled],
         <!-- GAME -->
         <section id="pageGame">
           <div class="play-row" style="width:100%;">
-            <button id="btnPlay" class="btn-play" title="Play"><i class="fa-solid fa-play" style="font-size:14px"></i></button>
-            <input id="inputAnswer" class="word-input" placeholder="Type what you hear..." autocomplete="off" />
-            <div class="result" id="resultText" aria-live="polite"></div>
+            <div class="play-controls">
+              <button id="btnPlay" class="btn-play" title="Play"><i class="fa-solid fa-play" style="font-size:14px"></i></button>
+              <input id="inputAnswer" class="word-input" placeholder="Type what you hear..." autocomplete="off" />
+              <div class="result" id="resultText" aria-live="polite"></div>
+            </div>
           </div>
+
 
           <!-- reused to show definition once round ends -->
           <div class="hint-line" id="hintLine" aria-hidden="true"></div>
