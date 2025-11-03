@@ -143,11 +143,6 @@ button,
 .btn-play i,
 .icon-btn i,
 .auto-btn i,
-.stats-wipe-btn i {
-  font-size: 18px;
-  color: inherit;
-  line-height: 1;
-}
 
 button:hover,
 .icon-btn:hover,
@@ -235,7 +230,7 @@ button[disabled],
   background: rgba(76,175,80,0.08);
 }
 
-/* --- Wipe Button (transparent idle, red hover) --- */
+/* --- Wipe Button (transparent idle, grey outline, red hover) --- */
 .stats-wipe-btn {
   width: 44px;
   height: 44px;
@@ -246,34 +241,39 @@ button[disabled],
   border: var(--ui-border) solid var(--muted-2);
   border-radius: var(--ui-radius);
   background: transparent !important;
-  color: var(--muted-2);                /* outline + icon share this */
+  color: var(--muted-2); /* grey matches outline */
   cursor: pointer;
-  box-shadow: none !important;
   transition:
     border-color 0.18s ease,
     color 0.18s ease,
     transform 0.12s ease;
 }
 
-/* hover + focus (red accent) */
+/* icon matches the button color exactly */
+.stats-wipe-btn i {
+  font-size: 18px;
+  color: currentColor;
+  line-height: 1;
+  transition: color 0.15s ease, transform 0.12s ease;
+}
+
+/* hover: red accent for both icon + outline */
 .stats-wipe-btn:hover,
-.stats-wipe-btn:focus,
-.stats-wipe-btn:focus-visible {
+.stats-wipe-btn:focus {
   background: transparent !important;
   border-color: var(--accent-red);
-  color: var(--accent-red);             /* makes icon red too */
+  color: var(--accent-red);
   outline: none !important;
-  box-shadow: none !important;
 }
 
 .stats-wipe-btn:hover i {
   transform: scale(1.08);
 }
 
+/* pressed down */
 .stats-wipe-btn:active i {
   transform: scale(1);
 }
-
 /* --- Hint / Result --- */
 .result {
   font-weight: 700;
