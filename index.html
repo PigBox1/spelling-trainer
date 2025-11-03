@@ -1564,6 +1564,41 @@ function updateScore(){
   document.addEventListener('click',(e)=>{ if (miniTooltip && !miniTooltip.contains(e.target)) hideMiniTooltip(); });
 
 })();
+
+  // ===== Align play-row to match the nav tab position exactly =====
+(function alignPlayRowWithNav(){
+  const card = document.querySelector('.card');
+  const nav  = document.querySelector('header nav');
+  const play = document.querySelector('.play-row');
+  if (!card || !nav || !play) return;
+
+  function applyAlignment(){
+    // get left offset of nav relative to card
+    const cRect = card.getBoundingClientRect();
+    const nRect = nav.getBoundingClientRect();
+
+    // compute padding inside the card so play-row content aligns with nav
+    const leftPad = Math.max(0, Math.round(nRect.left - cRect.left));
+    const rightPad = leftPad; // keep symmetrical
+
+    // apply as padding to the inner play-row container (preserve vertical centering)
+    play.style.paddingLeft  = leftPad + 'px';
+    play.style.paddingRight = rightPad + 'px';
+  }
+
+  // run on load and on resize (debounced)
+  let t = null;
+  function debouncedApply(){
+    clearTimeout(t);
+    t = setTimeout(applyAlignment, 60);
+  }
+  window.addEventListener('resize', debouncedApply);
+  // also align after fonts/DOM settle
+  window.addEventListener('load', applyAlignment);
+  // run once immediately (in case DOM ready)
+  setTimeout(applyAlignment, 30);
+})();
+  
 </script>
 </body>
 </html>
