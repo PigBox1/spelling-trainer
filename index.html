@@ -47,7 +47,7 @@ html, body {
   background: var(--card-bg);
   border-radius: var(--ui-radius);
   box-shadow: var(--shadow);
-  padding: 20px;
+  padding: 20px 22px; /* ALIGNMENT FIX: slightly increased right padding */
   box-sizing: border-box;
 }
 
@@ -57,6 +57,8 @@ header {
   align-items: center;
   justify-content: space-between;
   margin-bottom: 12px;
+  box-sizing: border-box; /* ALIGNMENT FIX */
+  width: 100%;            /* ALIGNMENT FIX */
 }
 
 header h1 {
@@ -79,6 +81,10 @@ nav button {
   padding: 8px 14px;
   cursor: pointer;
   transition: all 0.25s ease;
+  height: 38px; /* ALIGNMENT FIX: aligns with input and score box */
+  display: flex; /* ALIGNMENT FIX */
+  align-items: center; /* ALIGNMENT FIX */
+  justify-content: center; /* ALIGNMENT FIX */
 }
 
 nav button:hover {
@@ -156,7 +162,6 @@ button:hover,
 .segmented button:hover,
 .stats-wipe-btn:hover {
   background: rgba(0,0,0,0.03);
-  /* avoid forcing a new color here so icons keep currentColor behavior */
 }
 
 /* Slight pressed feedback */
@@ -254,13 +259,12 @@ button[disabled],
   border: var(--ui-border) solid var(--muted-2) !important;
   border-radius: var(--ui-radius) !important;
   background: transparent !important;
-  color: var(--muted-2) !important;  /* idle icon color matches outline */
+  color: var(--muted-2) !important;
   cursor: pointer;
   box-shadow: none !important;
   transition: border-color 0.18s ease, color 0.18s ease, transform 0.12s ease;
 }
 
-/* icon follows button color precisely */
 .stats-wipe-btn i {
   font-size: 18px;
   color: currentColor !important;
@@ -268,7 +272,6 @@ button[disabled],
   transition: color 0.15s ease, transform 0.12s ease;
 }
 
-/* hover/focus: force red for both border and icon */
 .stats-wipe-btn:hover,
 .stats-wipe-btn:focus,
 .stats-wipe-btn:focus-visible {
@@ -282,9 +285,7 @@ button[disabled],
 .stats-wipe-btn:hover i { transform: scale(1.08); }
 .stats-wipe-btn:active i { transform: scale(1); }
 
-/* safety: if <i> has inline styles, make it inherit currentColor */
 .stats-wipe-btn > i[style] { color: currentColor !important; }
-
 
 /* --- Hint / Result --- */
 .result {
@@ -295,8 +296,7 @@ button[disabled],
   text-align: right;
 }
 
-/* the hintLine below is repurposed to contain the definition after the round ends
-   Updated to match app font, left-aligned and italic per request */
+/* the hintLine below is repurposed to contain the definition after the round ends */
 .hint-line {
   margin-top: 8px;
   font-family: inherit;
@@ -349,9 +349,11 @@ button[disabled],
   gap: 10px;
   margin-top: 12px;
   align-items: center;
+  box-sizing: border-box; /* ALIGNMENT FIX */
+  width: 100%;            /* ALIGNMENT FIX */
 }
 
-/* --- Score box (right-aligned, outlined, consistent with textbox style) --- */
+/* --- Score box --- */
 .score-box {
   display: inline-flex;
   align-items: center;
@@ -365,7 +367,7 @@ button[disabled],
   background: transparent;
   color: #111;
   font-size: 16px;
-  font-weight: 500; /* same as textbox weight */
+  font-weight: 500;
   box-sizing: border-box;
 }
 
@@ -388,29 +390,28 @@ button[disabled],
   background: rgba(0,0,0,0.02);
 }
 
-
 /* --- Segmented Controls --- */
 .segmented {
   display: flex;
   gap: 12px;
   border-radius: var(--ui-radius);
-  padding: 0;                 /* remove extra vertical padding that was shifting alignment */
+  padding: 0;
   background: transparent;
   align-items: center;
-  flex-wrap: nowrap;          /* don't allow wrap so labels stay on one line */
+  flex-wrap: nowrap;
   box-sizing: border-box;
-  margin: 0;                  /* remove margin that created uneven spacing */
+  margin: 0;
 }
 
 .segmented button {
-  flex: 0 0 auto;             /* don't stretch; keep natural width */
+  flex: 0 0 auto;
   border: var(--ui-border) solid var(--muted-2);
   border-radius: var(--ui-radius);
   color: #666;
   font-weight: 700;
-  padding: 8px 14px;         /* wider horizontal padding to prevent wrapping */
+  padding: 8px 14px;
   background: transparent;
-  white-space: nowrap;       /* KEEP whole label on one line (prevents "Show before" splitting) */
+  white-space: nowrap;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -421,26 +422,26 @@ button[disabled],
 .settings-row {
   display: flex;
   gap: 16px;
-  align-items: center;        /* vertically center label and controls */
-  padding: 10px 0;            /* consistent vertical spacing between rows */
+  align-items: center;
+  padding: 10px 0;
   box-sizing: border-box;
 }
   
 .label {
-  width: 120px;               /* fixed column width so controls line up */
+  width: 120px;
   display: flex;
-  align-items: center;        /* vertical centering */
+  align-items: center;
   font-size: 14px;
   color: #666;
   white-space: nowrap;
   box-sizing: border-box;
-  padding-left: 4px;          /* small inner offset to match visual spacing */
+  padding-left: 4px;
 }
 
 .control {
   flex: 1;
   display: flex;
-  align-items: center;        /* align control items on their center line */
+  align-items: center;
   gap: 12px;
   box-sizing: border-box;
 }
@@ -544,8 +545,10 @@ button[disabled],
   align-items: center;
   gap: 12px;
   margin-bottom: 20px;
-  margin-left: -2px; /* compensate for border width */
-  margin-right: -2px; /* keeps it perfectly aligned with tabs */
+  margin-left: -2px;
+  margin-right: -2px; /* ALIGNMENT FIX: aligns textbox with nav & score box */
+  box-sizing: border-box; /* ALIGNMENT FIX */
+  width: 100%; /* ALIGNMENT FIX */
 }
 
 .play-row .btn-play {
@@ -555,7 +558,7 @@ button[disabled],
 .play-row input.word-input {
   flex: 1;
   min-width: 0;
-  margin-right: 0;
+  margin-right: 0; /* ALIGNMENT FIX */
   border-radius: var(--ui-radius);
   border: var(--ui-border) solid var(--muted-2);
   box-sizing: border-box;
@@ -567,8 +570,6 @@ button[disabled],
   text-align: right;
 }
 
-
-/* --- Responsive --- */
 /* --- Responsive --- */
 @media (max-width: 760px) {
   .card { padding: 14px; }
@@ -592,8 +593,8 @@ button[disabled],
     transform: scale(1.08);
   }
 }
-
 </style>
+
 </head>
 <body>
   <div class="wrap">
