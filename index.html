@@ -14,7 +14,7 @@
   --accent-green: #4CAF50;
   --accent-yellow: #FFC107;
   --accent-red: #F44336;
-  --card-width: 760px;
+  --card-width: 1100px; /* a bit wider for your layout screenshot */
   --shadow: 0 10px 30px rgba(20,20,30,0.06);
   --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, "Roboto Mono", "Courier New", monospace;
 
@@ -24,7 +24,7 @@
   --main-icon-size: 48px;
 }
 
-/* --- Base Layout --- */
+/* ---------- Base layout ---------- */
 html, body {
   height: 100%;
   margin: 0;
@@ -47,26 +47,29 @@ html, body {
   background: var(--card-bg);
   border-radius: var(--ui-radius);
   box-shadow: var(--shadow);
-  padding: 20px;
+  padding: 20px 28px;
   box-sizing: border-box;
 }
 
-/* --- Header & Navigation --- */
+/* ---------- Header / nav ---------- */
 header {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 18px;
   margin-bottom: 12px;
 }
 
-header h1 {
-  font-size: 18px;
-  margin: 0;
-}
+/* left block (logo/title) and right block (tabs) layout are explicit to avoid wrapping problems */
+.header-left { display:flex; align-items:center; gap:12px; min-width:200px; }
+.header-title { font-size:20px; font-weight:800; line-height:1; }
 
+/* tabs */
 nav {
   display: flex;
-  gap: 8px;
+  gap: 12px;
+  align-items: center;
+  margin-left: 8px;
 }
 
 nav button {
@@ -77,13 +80,11 @@ nav button {
   font-weight: 700;
   padding: 8px 14px;
   cursor: pointer;
-  transition: all 0.25s ease;
+  transition: all 0.20s ease;
+  white-space: nowrap;
 }
 
-nav button:hover {
-  background: rgba(0,0,0,0.03);
-  color: #111;
-}
+nav button:hover { background: rgba(0,0,0,0.03); color:#111; }
 
 nav button.active {
   border-color: var(--accent-green);
@@ -91,7 +92,17 @@ nav button.active {
   background: transparent;
 }
 
-/* --- Input (word text box) --- */
+/* ---------- Play row ---------- */
+.play-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 20px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* input aligned to match icon height and slightly wider */
 input.word-input {
   flex: 1;
   height: var(--main-icon-size);
@@ -102,345 +113,171 @@ input.word-input {
   color: #111;
   padding: 0 16px;
   box-sizing: border-box;
-  min-width: 280px;
-  transition: all 0.25s ease;
+  min-width: 340px;
+  transition: all 0.20s ease;
+}
+input.word-input:focus { outline:none; border-color:var(--muted-2); }
+
+/* play icon button kept square and aligned */
+.btn-play {
+  width: var(--main-icon-size);
+  height: var(--main-icon-size);
+  padding: 0;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  border-radius:var(--ui-radius);
+  border:var(--ui-border) solid var(--muted-2);
+  background:transparent;
+  color:var(--muted-2);
+  cursor:pointer;
+}
+.btn-play i { font-size:18px; transition:transform .12s ease; }
+.btn-play:hover i { transform:scale(1.08); }
+
+/* ---------- Controls row (left icons + spacer + score box on right) ---------- */
+/* We expect your HTML to have a .controls container. If it doesn't, add class="controls" to that div. */
+.controls,
+.controls-row,
+.game-controls {
+  display:flex;
+  align-items:center;
+  gap:12px;                 /* same gap as .play-row */
+  width:100%;
+  box-sizing:border-box;
+  margin-top:12px;
+  flex-wrap:nowrap;         /* keep score on the same line */
 }
 
-input.word-input:focus {
-  outline: none;
-  border-color: var(--muted-2);
-}
-
-/* --- Universal Buttons --- */
-button,
-.icon-btn,
-.btn-play,
-.auto-btn,
-.segmented button,
-.stats-wipe-btn {
-  border-radius: var(--ui-radius);
-  border: var(--ui-border) solid var(--muted-2);
-  background: transparent;
-  color: var(--muted-2);
-  cursor: pointer;
-  transition: all 0.25s ease;
-}
-
-/* --- Icon Buttons (Play, Check, Next, Auto Next) --- */
-.btn-play,
+/* icon buttons (check/next/autonext) */
 .icon-btn,
 .auto-btn {
   width: var(--main-icon-size);
   height: var(--main-icon-size);
   padding: 0;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  box-sizing: border-box;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  border-radius:var(--ui-radius);
+  border:var(--ui-border) solid var(--muted-2);
+  background:transparent;
+  color:var(--muted-2);
+  cursor:pointer;
 }
-
-.btn-play i,
 .icon-btn i,
-.auto-btn i,
-.stats-wipe-btn i {
-  font-size: 18px;
-  color: inherit;
-  line-height: 1;
-  transition: transform 0.15s ease, color 0.15s ease;
-}
-
-.btn-play:hover i,
+.auto-btn i { font-size:18px; transition: transform .12s ease, color .12s ease; }
 .icon-btn:hover i,
-.auto-btn:hover i,
-.stats-wipe-btn:hover i {
-  transform: scale(1.08);
-}
+.auto-btn:hover i { transform:scale(1.08); }
 
-button:hover,
-.icon-btn:hover,
-.btn-play:hover,
-.auto-btn:hover,
-.segmented button:hover,
-.stats-wipe-btn:hover {
-  background: rgba(0,0,0,0.03);
-  color: #111;
-}
+/* if you used a spacer div instead of margin-left:auto, keep it. otherwise score-box will push itself right */
+.controls .spacer { flex:1; min-width:10px; }
 
-button[disabled],
-.icon-btn[disabled],
-.btn-play[disabled],
-.auto-btn[disabled] {
-  opacity: 0.5;
-  cursor: not-allowed;
+/* score box fixed to right */
+.score-box {
+  margin-left:auto;               /* reliable right alignment */
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:8px;
+  height:var(--main-icon-size);
+  min-width:92px;
+  padding:0 16px;
+  border:var(--ui-border) solid var(--muted-2);
+  border-radius:var(--ui-radius);
+  background:transparent;
+  color:#111;
+  font-size:16px;
+  font-weight:500;
+  box-sizing:border-box;
 }
+.score-box i { font-size:14px; color:var(--muted-2); }
 
-/* --- Segmented Buttons --- */
+/* ---------- Segmented controls ---------- */
 .segmented {
-  display: flex;
-  justify-content: space-between;
-  gap: 12px;
-  border-radius: var(--ui-radius);
-  padding: 6px 0;
-  background: transparent;
-  margin-bottom: 20px;
+  display:flex;
+  gap:12px;
+  border-radius:var(--ui-radius);
+  padding:6px 0;
+  background:transparent;
+  margin:0; /* control spacing is handled by layout above */
+  width:100%;
+  box-sizing:border-box;
 }
-
 .segmented button {
-  flex: 1;
-  border: var(--ui-border) solid var(--muted-2);
-  border-radius: var(--ui-radius);
-  color: #666;
-  font-weight: 700;
-  padding: 8px 10px;
-  background: transparent;
+  flex:1;
+  border:var(--ui-border) solid var(--muted-2);
+  border-radius:var(--ui-radius);
+  color:#666;
+  font-weight:700;
+  padding:8px 10px;
+  background:transparent;
 }
 
-/* Outline-only toggle look */
-.segmented button.on {
-  background: transparent;
-  border-color: var(--accent-green);
-  color: var(--accent-green);
-}
+/* toggled look: outline-only */
+.segmented button.on { background:transparent; }
 
-/* --- Difficulty Colors --- */
-.segmented button[data-val="easy"].on {
-  border-color: var(--accent-green);
-  color: var(--accent-green);
-  background: transparent;
-}
-.segmented button[data-val="advanced"].on {
-  border-color: var(--accent-yellow);
-  color: var(--accent-yellow);
-  background: transparent;
-}
-.segmented button[data-val="proficient"].on {
-  border-color: var(--accent-red);
-  color: var(--accent-red);
-  background: transparent;
-}
+/* difficulties: green / yellow / red outline */
+.segmented button[data-val="easy"].on { border-color:var(--accent-green); color:var(--accent-green); }
+.segmented button[data-val="advanced"].on { border-color:var(--accent-yellow); color:var(--accent-yellow); }
+.segmented button[data-val="proficient"].on { border-color:var(--accent-red); color:var(--accent-red); }
 
-/* --- Mode Colors --- */
-.segmented button[data-val="easy"].on[data-group="mode"] {
-  border-color: var(--accent-green);
-  color: var(--accent-green);
-  background: transparent;
-}
-.segmented button[data-val="normal"].on {
-  border-color: var(--accent-yellow);
-  color: var(--accent-yellow);
-  background: transparent;
-}
-.segmented button[data-val="hardcore"].on {
-  border-color: var(--accent-red);
-  color: var(--accent-red);
-  background: transparent;
-}
+/* game mode coloring (easy,yellow normal, hardcore red) */
+.segmented.mode button[data-val="easy"].on { border-color:var(--accent-green); color:var(--accent-green); }
+.segmented.mode button[data-val="normal"].on { border-color:var(--accent-yellow); color:var(--accent-yellow); }
+.segmented.mode button[data-val="hardcore"].on { border-color:var(--accent-red); color:var(--accent-red); }
 
-/* --- Wipe Button --- */
+/* ---------- Wipe button (fixed transparent behavior) ---------- */
 .stats-wipe-btn {
-  width: 44px;
-  height: 44px;
-  padding: 0;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  border: var(--ui-border) solid var(--muted-2);
-  border-radius: var(--ui-radius);
-  background: transparent !important;
-  color: var(--muted-2);
-  cursor: pointer;
-  box-shadow: none !important;
-  transition: border-color 0.25s ease, color 0.25s ease, transform 0.2s ease;
+  width:44px;
+  height:44px;
+  padding:0;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  border:var(--ui-border) solid var(--muted-2);
+  border-radius:var(--ui-radius);
+  background:transparent !important;
+  color:var(--muted-2);
+  cursor:pointer;
+  box-shadow:none !important;
+  transition: border-color .18s ease, color .18s ease, transform .12s ease;
 }
+.stats-wipe-btn i { font-size:18px; color:var(--muted-2); transition: color .18s ease, transform .12s ease; }
+.stats-wipe-btn:hover { border-color:var(--accent-red); color:var(--accent-red); background:transparent !important; }
+.stats-wipe-btn:hover i { color:var(--accent-red); transform:scale(1.08); }
+.stats-wipe-btn:focus-visible { outline:none !important; box-shadow:none !important; }
 
-.stats-wipe-btn:hover,
-.stats-wipe-btn:focus,
-.stats-wipe-btn:active {
-  background: transparent !important;
-  box-shadow: none !important;
+/* ---------- Feedback / progress bars ---------- */
+.feedback-wrap { width:100%; display:flex; justify-content:center; margin-top:8px; }
+.feedback-bar { width:100%; display:flex; gap:10px; position:relative; align-items:center; padding:6px 0; }
+.segment { flex:1; height:14px; background:var(--muted); border-radius:var(--ui-radius); transition:background .22s; }
+
+/* merged green bar element absolute positioning handled in JS; it should inherit radius via class .merged if used */
+
+/* ---------- Stats list layout ---------- */
+.stats-list { display:flex; flex-direction:column; gap:8px; margin-top:8px; }
+.stat-row { display:flex; gap:12px; align-items:center; justify-content:space-between; padding:8px; border-radius:var(--ui-radius); background:#fbfbfb; border:var(--ui-border) solid #f0f0f0; }
+.stat-left { display:flex; align-items:center; gap:8px; flex:1; font-weight:600; }
+.stat-right { display:flex; align-items:center; gap:12px; width:300px; justify-content:flex-end; }
+
+/* ---------- Small responsive adjustments ---------- */
+@media (max-width: 980px) {
+  :root { --card-width: 920px; }
+  .card { padding:18px; }
+  input.word-input { min-width:240px; }
+  .score-box { min-width:80px; padding:0 12px; }
 }
-
-.stats-wipe-btn i {
-  font-size: 18px;
-  color: var(--muted-2);
-  line-height: 1;
-  transition: color 0.2s ease, transform 0.15s ease;
-}
-
-.stats-wipe-btn:hover {
-  border-color: var(--accent-red);
-  color: var(--accent-red);
-}
-
-.stats-wipe-btn:hover i {
-  color: var(--accent-red);
-  transform: scale(1.08);
-}
-
-.stats-wipe-btn:focus-visible {
-  outline: none !important;
-  box-shadow: none !important;
-}
-
-/* --- Play Row (textbox + play button) --- */
-.play-row {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  margin-bottom: 20px;
-  width: 100%;
-  box-sizing: border-box;
-}
-
-/* --- Controls Row (check, next, auto-next, score) --- */
-div:has(.icon-btn):has(.score-box) {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  margin-top: 12px;
-  width: 100%;
-  flex-wrap: nowrap;
-  box-sizing: border-box;
-}
-
-.score-box {
-  margin-left: auto;
-}
-
-/* --- Feedback Bars --- */
-.feedback-wrap {
-  width: 100%;
-  display: flex;
-  justify-content: center;
-  margin-top: 8px;
-}
-
-.feedback-bar {
-  width: 100%;
-  display: flex;
-  gap: 10px;
-  position: relative;
-  align-items: center;
-  padding: 6px 0;
-}
-
-.segment {
-  flex: 1;
-  height: 14px;
-  background: var(--muted);
-  border-radius: var(--ui-radius);
-  transition: background 0.22s ease, flex 0.22s ease, width 0.22s ease;
-  position: relative;
-}
-
-/* --- Score Box --- */
-.score-box {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  height: var(--main-icon-size);
-  min-width: 88px;
-  padding: 0 16px;
-  border: var(--ui-border) solid var(--muted-2);
-  border-radius: var(--ui-radius);
-  background: transparent;
-  color: #111;
-  font-size: 16px;
-  font-weight: 500;
-  box-sizing: border-box;
-}
-
-.score-box i {
-  font-size: 14px;
-  color: var(--muted-2);
-  line-height: 1;
-}
-
-#scoreValue {
-  font-size: 16px;
-  white-space: nowrap;
-  color: inherit;
-}
-
-/* --- Settings and Misc --- */
-.settings-row {
-  display: flex;
-  gap: 12px;
-  align-items: center;
-  margin: 8px 0;
-}
-
-.label {
-  min-width: 110px;
-  font-size: 14px;
-  color: #666;
-}
-
-.select {
-  padding: 10px 12px;
-  border-radius: var(--ui-radius);
-  border: var(--ui-border) solid var(--muted-2);
-  background: transparent;
-  font-size: 14px;
-  width: 100%;
-  box-sizing: border-box;
-  color: #111;
-  transition: all 0.25s ease;
-}
-
-.select:focus {
-  border-color: var(--accent-green);
-  outline: none;
-}
-
-/* --- Stats Layout --- */
-.stats-list {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  margin-top: 8px;
-}
-
-.stat-row {
-  display: flex;
-  gap: 12px;
-  align-items: center;
-  justify-content: space-between;
-  padding: 8px;
-  border-radius: var(--ui-radius);
-  background: #fbfbfb;
-  border: var(--ui-border) solid #f0f0f0;
-}
-
-.stat-left {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  flex: 1;
-  font-weight: 600;
-}
-
-.stat-right {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  width: 300px;
-  justify-content: flex-end;
-}
-
-/* --- Mobile Adjustments --- */
 @media (max-width: 760px) {
-  .card { padding: 14px; }
-  .stat-right { width: 200px; }
-  .label { min-width: 84px; }
-  .result { font-size: 14px; text-align: center; }
-  :root { --main-icon-size: 44px; }
-  .btn-play i,
-  .icon-btn i,
-  .auto-btn i,
-  .stats-wipe-btn i { font-size: 16px; }
+  :root { --main-icon-size:44px; }
+  .card { padding:14px; }
+  .header-left { min-width:120px; }
+  .segment { height:12px; }
+  .stat-right { width:200px; }
+  .segmented { gap:8px; }
+  .play-row, .controls { gap:10px; }
+  nav button { padding:6px 10px; }
 }
+
 </style>
 </head>
 <body>
