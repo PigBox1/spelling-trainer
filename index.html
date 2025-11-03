@@ -225,7 +225,7 @@ button[disabled],
   background: rgba(76,175,80,0.08);
 }
 
-/* --- Wipe Button (transparent, red hover accent) --- */
+/* --- Wipe Button (transparent idle, red hover) --- */
 .stats-wipe-btn {
   width: 44px;
   height: 44px;
@@ -235,21 +235,32 @@ button[disabled],
   justify-content: center;
   border: var(--ui-border) solid var(--muted-2);
   border-radius: var(--ui-radius);
-  background: transparent;
-  color: var(--muted-2); /* icon color matches outline */
+  background: transparent !important;    /* override any inline/styling */
+  color: var(--muted-2);
   cursor: pointer;
-  transition: all 0.25s ease;
+  box-shadow: none !important;
+  transition: border-color 0.18s ease, color 0.18s ease, transform 0.12s ease;
 }
 
-/* completely transparent hover */
+/* ensure no background appears in any state */
 .stats-wipe-btn:hover,
 .stats-wipe-btn:active,
-.stats-wipe-btn:focus {
+.stats-wipe-btn:focus,
+.stats-wipe-btn:focus-visible {
   background: transparent !important;
-  box-shadow: none;
+  box-shadow: none !important;
+  outline: none !important;
 }
 
-/* red accent hover for outline + icon */
+/* icon defaults to outline color */
+.stats-wipe-btn i {
+  font-size: 18px;
+  color: var(--muted-2);
+  line-height: 1;
+  transition: color 0.15s ease, transform 0.12s ease;
+}
+
+/* hover: red border + red icon scale */
 .stats-wipe-btn:hover {
   border-color: var(--accent-red);
   color: var(--accent-red);
@@ -258,17 +269,10 @@ button[disabled],
 .stats-wipe-btn:hover i {
   color: var(--accent-red);
   transform: scale(1.08);
-  transition: color 0.15s ease, transform 0.15s ease;
 }
 
-/* ensure the icon stays in sync with outline color */
-.stats-wipe-btn i {
-  font-size: 18px;
-  color: var(--muted-2);
-  line-height: 1;
-  transition: transform 0.15s ease, color 0.15s ease;
-}
-
+/* pressed: little reset so it doesn't stay scaled */
+.stats-wipe-btn:active i { transform: scale(1); }
 
 /* --- Hint / Result --- */
 .result {
