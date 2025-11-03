@@ -18,8 +18,8 @@
   --shadow: 0 10px 30px rgba(20,20,30,0.06);
   --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, "Roboto Mono", "Courier New", monospace;
 
-  /* Unified UI metrics */
-  --ui-radius: 8px;
+  /* unified metrics */
+  --ui-radius: 12px;
   --ui-border: 2px;
   --main-icon-size: 48px;
 }
@@ -69,7 +69,6 @@ nav {
   gap: 8px;
 }
 
-/* Transparent tab style to match new vibe */
 nav button {
   background: transparent;
   border: var(--ui-border) solid var(--muted-2);
@@ -89,10 +88,10 @@ nav button:hover {
 nav button.active {
   border-color: var(--accent-green);
   color: var(--accent-green);
-  background: rgba(76,175,80,0.08);
+  background: transparent;
 }
 
-/* --- Input Fields --- */
+/* --- Input (word text box) --- */
 input.word-input {
   flex: 1;
   height: var(--main-icon-size);
@@ -103,7 +102,7 @@ input.word-input {
   color: #111;
   padding: 0 16px;
   box-sizing: border-box;
-  min-width: 350px;
+  min-width: 280px;
   transition: all 0.25s ease;
 }
 
@@ -112,7 +111,7 @@ input.word-input:focus {
   border-color: var(--muted-2);
 }
 
-/* --- Universal Button Reset --- */
+/* --- Universal Buttons --- */
 button,
 .icon-btn,
 .btn-play,
@@ -127,7 +126,7 @@ button,
   transition: all 0.25s ease;
 }
 
-/* --- Icon Buttons (Main Game Controls) --- */
+/* --- Icon Buttons (Play, Check, Next, Auto Next) --- */
 .btn-play,
 .icon-btn,
 .auto-btn {
@@ -147,6 +146,14 @@ button,
   font-size: 18px;
   color: inherit;
   line-height: 1;
+  transition: transform 0.15s ease, color 0.15s ease;
+}
+
+.btn-play:hover i,
+.icon-btn:hover i,
+.auto-btn:hover i,
+.stats-wipe-btn:hover i {
+  transform: scale(1.08);
 }
 
 button:hover,
@@ -159,12 +166,6 @@ button:hover,
   color: #111;
 }
 
-button:active,
-.icon-btn:active,
-.btn-play:active {
-  background: rgba(0,0,0,0.08);
-}
-
 button[disabled],
 .icon-btn[disabled],
 .btn-play[disabled],
@@ -173,59 +174,69 @@ button[disabled],
   cursor: not-allowed;
 }
 
-/* --- Toggle / Active States --- */
-.segmented button.on {
-  border-color: var(--accent-green);
-  color: var(--accent-green);
+/* --- Segmented Buttons --- */
+.segmented {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  border-radius: var(--ui-radius);
+  padding: 6px 0;
+  background: transparent;
+  margin-bottom: 20px;
+}
+
+.segmented button {
+  flex: 1;
+  border: var(--ui-border) solid var(--muted-2);
+  border-radius: var(--ui-radius);
+  color: #666;
+  font-weight: 700;
+  padding: 8px 10px;
   background: transparent;
 }
 
-/* Difficulty colors — outline only */
+/* outline-only toggle look */
+.segmented button.on {
+  background: transparent;
+  border-color: var(--accent-green);
+  color: var(--accent-green);
+}
+
+/* --- Difficulty Colors --- */
 .segmented button[data-val="easy"].on {
   border-color: var(--accent-green);
   color: var(--accent-green);
   background: transparent;
 }
-
 .segmented button[data-val="advanced"].on {
   border-color: var(--accent-yellow);
   color: var(--accent-yellow);
   background: transparent;
 }
-
 .segmented button[data-val="proficient"].on {
   border-color: var(--accent-red);
   color: var(--accent-red);
   background: transparent;
 }
 
-/* Mode colors — outline only */
+/* --- Mode Colors --- */
 .segmented button[data-val="easy"].on[data-group="mode"] {
   border-color: var(--accent-green);
   color: var(--accent-green);
   background: transparent;
 }
-
 .segmented button[data-val="normal"].on {
   border-color: var(--accent-yellow);
   color: var(--accent-yellow);
   background: transparent;
 }
-
 .segmented button[data-val="hardcore"].on {
   border-color: var(--accent-red);
   color: var(--accent-red);
   background: transparent;
 }
 
-/* Auto Next toggle */
-.auto-btn.checked {
-  border-color: var(--accent-green);
-  color: var(--accent-green);
-  background: rgba(76,175,80,0.08);
-}
-
-/* --- Wipe Button (transparent, red hover accent) --- */
+/* --- Wipe Button --- */
 .stats-wipe-btn {
   width: 44px;
   height: 44px;
@@ -235,21 +246,27 @@ button[disabled],
   justify-content: center;
   border: var(--ui-border) solid var(--muted-2);
   border-radius: var(--ui-radius);
-  background: transparent;
-  color: var(--muted-2); /* icon color matches outline */
-  cursor: pointer;
-  transition: all 0.25s ease;
-}
-
-/* completely transparent hover */
-.stats-wipe-btn:hover,
-.stats-wipe-btn:active,
-.stats-wipe-btn:focus {
   background: transparent !important;
-  box-shadow: none;
+  color: var(--muted-2);
+  cursor: pointer;
+  box-shadow: none !important;
+  transition: border-color 0.25s ease, color 0.25s ease, transform 0.2s ease;
 }
 
-/* red accent hover for outline + icon */
+.stats-wipe-btn:hover,
+.stats-wipe-btn:focus,
+.stats-wipe-btn:active {
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+.stats-wipe-btn i {
+  font-size: 18px;
+  color: var(--muted-2);
+  line-height: 1;
+  transition: color 0.2s ease, transform 0.15s ease;
+}
+
 .stats-wipe-btn:hover {
   border-color: var(--accent-red);
   color: var(--accent-red);
@@ -258,33 +275,20 @@ button[disabled],
 .stats-wipe-btn:hover i {
   color: var(--accent-red);
   transform: scale(1.08);
-  transition: color 0.15s ease, transform 0.15s ease;
 }
 
-/* ensure the icon stays in sync with outline color */
-.stats-wipe-btn i {
-  font-size: 18px;
-  color: var(--muted-2);
-  line-height: 1;
-  transition: transform 0.15s ease, color 0.15s ease;
+.stats-wipe-btn:focus-visible {
+  outline: none !important;
+  box-shadow: none !important;
 }
 
-
-/* --- Hint / Result --- */
-.result {
-  font-weight: 700;
-  color: #444;
-  flex: 1;
-  text-align: center;
-}
-
-.hint-line {
-  margin-top: 8px;
-  font-family: var(--mono);
-  color: #999;
-  text-align: center;
-  min-height: 20px;
-  transition: opacity 0.25s ease;
+/* --- Play Row --- */
+.play-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin-bottom: 20px;
 }
 
 /* --- Feedback Bars --- */
@@ -313,25 +317,7 @@ button[disabled],
   position: relative;
 }
 
-.merged {
-  position: absolute;
-  height: 14px;
-  background: var(--accent-green);
-  border-radius: var(--ui-radius);
-  transition: left 0.22s ease, width 0.22s ease, opacity 0.22s ease;
-  opacity: 0;
-  pointer-events: none;
-}
-
-/* --- Controls --- */
-.controls {
-  display: flex;
-  gap: 10px;
-  margin-top: 12px;
-  align-items: center;
-}
-
-/* --- Score box (right-aligned, outlined, consistent with textbox style) --- */
+/* --- Score Box --- */
 .score-box {
   display: inline-flex;
   align-items: center;
@@ -345,52 +331,23 @@ button[disabled],
   background: transparent;
   color: #111;
   font-size: 16px;
-  font-weight: 500; /* same as textbox weight */
+  font-weight: 500;
   box-sizing: border-box;
 }
 
-/* make icon match outline color */
 .score-box i {
   font-size: 14px;
   color: var(--muted-2);
   line-height: 1;
 }
 
-/* value styling */
 #scoreValue {
   font-size: 16px;
   white-space: nowrap;
   color: inherit;
 }
 
-/* subtle hover feedback */
-.score-box:hover {
-  background: rgba(0,0,0,0.02);
-}
-
-
-/* --- Segmented Controls --- */
-.segmented {
-  display: flex;
-  justify-content: space-between;
-  gap: 12px;                /* same spacing as play row */
-  border-radius: var(--ui-radius);
-  padding: 6px 0;
-  background: transparent;
-  margin-bottom: 20px;      /* aligns visually with play-row’s offset */
-}
-
-.segmented button {
-  flex: 1;
-  border: var(--ui-border) solid var(--muted-2);
-  border-radius: var(--ui-radius);
-  color: #666;
-  font-weight: 700;
-  padding: 8px 10px;
-  background: transparent;
-}
-
-/* --- Settings Rows --- */
+/* --- Settings and Misc --- */
 .settings-row {
   display: flex;
   gap: 12px;
@@ -404,14 +361,6 @@ button[disabled],
   color: #666;
 }
 
-.control {
-  flex: 1;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-/* --- Select --- */
 .select {
   padding: 10px 12px;
   border-radius: var(--ui-radius);
@@ -429,7 +378,7 @@ button[disabled],
   outline: none;
 }
 
-/* --- Stats Section --- */
+/* --- Stats Layout --- */
 .stats-list {
   display: flex;
   flex-direction: column;
@@ -464,56 +413,7 @@ button[disabled],
   justify-content: flex-end;
 }
 
-/* --- Mini Stats Bars --- */
-.mini-bar {
-  display: flex;
-  gap: 6px;
-  width: 180px;
-  height: 12px;
-  align-items: center;
-  position: relative;
-}
-
-.mini-seg {
-  flex: 1;
-  height: 100%;
-  border-radius: var(--ui-radius);
-  background: var(--muted);
-  position: relative;
-  transition: background 0.18s ease;
-}
-
-/* --- Tooltip --- */
-.mini-tooltip {
-  position: fixed;
-  z-index: 9999;
-  padding: 6px 8px;
-  border-radius: 6px;
-  color: #fff;
-  font-weight: 700;
-  font-size: 12px;
-  white-space: pre-line;
-  pointer-events: none;
-  transform: translateY(-6px);
-  opacity: 0;
-  transition: opacity 0.12s ease, transform 0.12s ease;
-}
-
-/* --- Misc --- */
-.small {
-  font-size: 13px;
-  color: #666;
-}
-
-.play-row {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 12px;                /* spacing between items */
-  margin-bottom: 20px;      /* same bottom spacing as segmented group */
-}
-
-/* --- Responsive --- */
+/* --- Mobile Adjustments --- */
 @media (max-width: 760px) {
   .card { padding: 14px; }
   .stat-right { width: 200px; }
@@ -523,20 +423,8 @@ button[disabled],
   .btn-play i,
   .icon-btn i,
   .auto-btn i,
-  .stats-wipe-btn i {
-    font-size: 18px;
-    line-height: 1;
-    color: inherit;
-    transition: transform 0.15s ease, color 0.15s ease;
-  }
-  .btn-play:hover i,
-  .icon-btn:hover i,
-  .auto-btn:hover i,
-  .stats-wipe-btn:hover i {
-    transform: scale(1.08);
-  }
+  .stats-wipe-btn i { font-size: 16px; }
 }
-
 </style>
 </head>
 <body>
