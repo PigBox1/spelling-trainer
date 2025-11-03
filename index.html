@@ -1006,106 +1006,135 @@ button[disabled],
   // fetch definition from dictionaryapi.dev - try variants in order until one returns a definition
   // Replace your existing fetchDefinitionForVariants(...) with this version.
 // Tries jsDelivr first (CORS-friendly), falls back to raw.githubusercontent, tolerant parsing.
+// Replace existing fetchDefinitionForVariants(...) with this Wiktionary version
 async function fetchDefinitionForVariants(variants) {
   if (!variants || !variants.length) return null;
 
-  const cdnBase = 'https://cdn.jsdelivr.net/gh/open-dictionary/english-dictionary@main/data/';
-  const rawBase = 'https://raw.githubusercontent.com/open-dictionary/english-dictionary/main/data/';
-  // helper to build letter-path e.g. "apple" -> "a/p/p/l/e/_.json"
-  function buildPathForWord(word) {
-    const clean = String(word || '').trim().toLowerCase().replace(/[^a-z0-9']/g,'');
-    if (!clean) return null;
-    return clean.split('').join('/') + '/_.json';
-  }
-
-  // tolerant JSON parser: tries several common shapes and returns a definition string or null
-  function parseDefinitionFromJson(payload) {
+  // helper: try to fetch and extract English defs from action=parse HTML
+  async function tryParsePage(word) {
     try {
-      // Many small dictionary JSONs use an array of entries with meanings/definitions
-      if (Array.isArray(payload) && payload.length) {
-        // try the common "meanings -> definitions" shape
-        for (const entry of payload) {
-          if (entry && entry.meanings && entry.meanings.length) {
-            for (const m of entry.meanings) {
-              if (m.definitions && m.definitions.length) {
-                const d = m.definitions.find(dd => dd && (dd.definition || dd.def));
-                if (d) return String(d.definition || d.def).trim();
+      const url = 'https://en.wiktionary.org/w/api.php'
+        + '?action=parse&format=json&prop=text&redirects=1'
+        + '&page=' + encodeURIComponent(word)
+        + '&origin=*';
+      const res = await fetch(url, { cache: 'no-store' });
+      if (!res.ok) return null;
+      const data = await res.json().catch(()=>null);
+      if (!data || !data.parse || !data.parse.text || !data.parse.text['*']) return null;
+      const html = data.parse.text['*'];
+      // parse HTML and try to extract the English section
+      const doc = new DOMParser().parseFromString(html, 'text/html');
+      // find the h2 with a span.mw-headline#English
+      const headlines = Array.from(doc.querySelectorAll('span.mw-headline'));
+      let englishHeading = headlines.find(h => (h.id && h.id.toLowerCase() === 'english') || h.textContent.trim().toLowerCase() === 'english');
+      if (!englishHeading) {
+        // alternative: find by text in headline
+        englishHeading = Array.from(headlines).find(h => /english/i.test(h.textContent || ''));
+      }
+      if (englishHeading) {
+        // climb to the h2 element (mw-headline is inside h2)
+        let h2 = englishHeading.closest('h2');
+        if (h2) {
+          // collect siblings until next h2
+          let node = h2.nextElementSibling;
+          let collected = [];
+          while (node && node.tagName && node.tagName.toLowerCase() !== 'h2') {
+            // try to find first <ol> or <ul> with <li> definitions or direct <li>
+            if (node.querySelectorAll) {
+              const lis = node.querySelectorAll('ol > li, ul > li, dl > dd, p');
+              if (lis && lis.length) {
+                // take the first li-like usable text
+                for (let li of lis) {
+                  // get visible text and clean it up
+                  let txt = li.textContent || '';
+                  txt = txt.replace(/\[\d+\]/g,'').trim(); // remove ref markers like [1]
+                  if (txt) return txt.split('\n').map(s=>s.trim()).filter(Boolean).join(' ').slice(0,800);
+                }
               }
             }
-          }
-        }
-        // fallback: maybe payload[0].definition or payload[0].meaning
-        if (payload[0] && (payload[0].definition || payload[0].meaning)) {
-          return String(payload[0].definition || payload[0].meaning).trim();
-        }
-      }
-      // single-object form with "meanings"
-      if (payload && payload.meanings && payload.meanings.length) {
-        for (const m of payload.meanings) {
-          if (m.definitions && m.definitions.length) {
-            const d = m.definitions.find(dd => dd && (dd.definition || dd.def));
-            if (d) return String(d.definition || d.def).trim();
+            // also consider node itself if it is a <p> with text
+            if (node.tagName && node.tagName.toLowerCase() === 'p') {
+              let txt = node.textContent || '';
+              txt = txt.replace(/\[\d+\]/g,'').trim();
+              if (txt) return txt.split('\n').map(s=>s.trim()).filter(Boolean).join(' ').slice(0,800);
+            }
+            node = node.nextElementSibling;
           }
         }
       }
-      // other simple shapes
-      if (payload && payload.definition) return String(payload.definition).trim();
-      if (payload && payload.meaning) return String(payload.meaning).trim();
-
-      // fallback: if there's a "definitions" array at root
-      if (Array.isArray(payload.definitions) && payload.definitions.length) {
-        const d = payload.definitions.find(dd => dd && (dd.definition || dd.def));
-        if (d) return String(d.definition || d.def).trim();
-      }
+      // If English section not found or empty, return null so caller falls back
+      return null;
     } catch (e) {
-      // ignore parse errors here; will return null
-    }
-    return null;
-  }
-
-  // Try variants sequentially
-  for (const variantRaw of variants) {
-    const variant = String(variantRaw || '').trim().toLowerCase();
-    if (!variant) continue;
-    const rel = buildPathForWord(variant);
-    if (!rel) continue;
-
-    // try cdn.jsdelivr first (CORS-friendly / fast)
-    const urlCdn = cdnBase + rel;
-    try {
-      const r = await fetch(urlCdn, { cache: 'no-store' });
-      if (r.ok) {
-        const json = await r.json().catch(()=>null);
-        if (json) {
-          const parsed = parseDefinitionFromJson(json);
-          if (parsed) return parsed;
-          // if file present but no parseable def, continue to next variant
-        }
-      }
-    } catch (err) {
-      // ignore and try fallback
-      console.debug('jsdelivr fetch failed for', variant, err);
-    }
-
-    // fallback to raw.githubusercontent (sometimes present even if CDN edge not updated)
-    const urlRaw = rawBase + rel;
-    try {
-      const r2 = await fetch(urlRaw, { cache: 'no-store' });
-      if (r2.ok) {
-        const json2 = await r2.json().catch(()=>null);
-        if (json2) {
-          const parsed2 = parseDefinitionFromJson(json2);
-          if (parsed2) return parsed2;
-        }
-      }
-    } catch (err) {
-      console.debug('raw.githubusercontent fetch failed for', variant, err);
+      // network/parse error -> return null
+      console.debug('Wiktionary parse error', e);
+      return null;
     }
   }
 
-  // none of the variants returned a usable definition
+  // fallback: try the extracts API (plain-text intro) — less precise but simple
+  async function tryExtracts(word) {
+    try {
+      const url = 'https://en.wiktionary.org/w/api.php'
+        + '?action=query&format=json&prop=extracts&explaintext=1&exintro=1'
+        + '&redirects=1'
+        + '&titles=' + encodeURIComponent(word)
+        + '&origin=*';
+      const r = await fetch(url, { cache: 'no-store' });
+      if (!r.ok) return null;
+      const j = await r.json().catch(()=>null);
+      if (!j || !j.query || !j.query.pages) return null;
+      const pages = j.query.pages;
+      const pageId = Object.keys(pages)[0];
+      if (!pageId || pageId === '-1') return null;
+      const extract = pages[pageId].extract;
+      if (!extract) return null;
+      // try to find the "English" sub-section in extract (extract may contain other languages)
+      const idx = extract.search(/\n==\s*English\s*==/i);
+      let text = extract;
+      if (idx >= 0) {
+        text = extract.slice(idx + extract.match(/\n==\s*English\s*==/i)[0].length);
+      }
+      // trim to first paragraph or first sentence
+      text = text.split('\n').map(s=>s.trim()).filter(Boolean)[0] || text;
+      if (text) return text.split('\n')[0].trim().slice(0,800);
+      return null;
+    } catch (e) {
+      console.debug('Wiktionary extracts error', e);
+      return null;
+    }
+  }
+
+  // normalization helpers (expand variants / punctuation)
+  function expandVariantFormats(v) {
+    const out = new Set();
+    const s = String(v || '').trim();
+    if (!s) return [];
+    out.add(s);
+    out.add(s.replace(/\s*\(.+?\)\s*/g,'').trim()); // remove parentheses
+    out.add(s.replace(/[\/,]/g,' ').trim());
+    out.add(s.replace(/[.]/g,'').trim());
+    // split slashes as separate candidates too, keep original forms
+    s.split(/\s*\/\s*/).forEach(part => { if (part) out.add(part.trim()); });
+    return Array.from(out).map(x=>x.trim()).filter(Boolean);
+  }
+
+  for (const rawVariant of variants) {
+    const candidates = expandVariantFormats(rawVariant);
+    for (const cand of candidates) {
+      // try parse HTML (best chance to isolate English)
+      const parsed = await tryParsePage(cand);
+      if (parsed) {
+        return parsed;
+      }
+      // fallback to extracts
+      const extracted = await tryExtracts(cand);
+      if (extracted) return extracted;
+    }
+  }
+
   return null;
 }
+
 
 
   // helper that updates the visible hintLine when a definition is available
