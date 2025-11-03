@@ -198,15 +198,23 @@ button[disabled],
 }
 
 /* Mode color coding */
+/* --- Mode color coding --- */
+.segmented button[data-val="easy"].on {
+  border-color: var(--accent-green);
+  color: var(--accent-green);
+  background: rgba(76,175,80,0.08);
+}
+
+.segmented button[data-val="normal"].on {
+  border-color: var(--accent-yellow);
+  color: var(--accent-yellow);
+  background: rgba(255,193,7,0.08);
+}
+
 .segmented button[data-val="hardcore"].on {
   border-color: var(--accent-red);
   color: var(--accent-red);
   background: rgba(244,67,54,0.08);
-}
-.segmented button[data-val="easy"].on[data-group="mode"] {
-  border-color: var(--accent-yellow);
-  color: var(--accent-yellow);
-  background: rgba(255,193,7,0.08);
 }
 
 /* Auto Next toggle */
@@ -304,18 +312,36 @@ button[disabled],
   align-items: center;
 }
 
-.score-area {
-  position: relative;
-  display: flex;
+/* --- Score box (right-aligned, matches segmented/button height) --- */
+.score-box {
+  display: inline-flex;
   align-items: center;
   gap: 8px;
-  min-width: 110px;
-  justify-content: flex-end;
+  height: var(--main-icon-size);           /* match main controls height */
+  min-width: 88px;                         /* reasonable minimum width */
+  padding: 0 12px;                         /* inner padding (keeps text centered) */
+  border: var(--ui-border) solid var(--muted-2);
+  border-radius: var(--ui-radius);
+  background: transparent;
+  color: #222;
+  font-weight: 800;
+  box-sizing: border-box;
+  justify-content: center;
 }
 
-.score {
-  font-weight: 800;
-  color: #222;
+.score-box i {
+  font-size: 14px;
+  color: inherit;
+  line-height: 1;
+}
+
+#scoreValue {
+  font-size: 16px;
+  white-space: nowrap;
+}
+
+.score-box:hover {
+  background: rgba(0,0,0,0.02);
 }
 
 /* --- Segmented Controls --- */
@@ -506,17 +532,21 @@ button[disabled],
             </div>
           </div>
 
-          <div class="controls">
-            <button id="btnCheck" class="icon-btn" type="button" title="Check"><i class="fa-solid fa-square-check" aria-hidden="true"></i></button>
-            <button id="btnNext" class="icon-btn" type="button" title="Next"><i class="fa-solid fa-forward" aria-hidden="true"></i></button>
-            <button id="autoNextBtn" class="icon-btn auto-btn" type="button" aria-pressed="false" title="Auto Next"><i class="fa-solid fa-arrows-spin" aria-hidden="true"></i></button>
+<div class="controls">
+  <button id="btnCheck" class="icon-btn" type="button" title="Check"><i class="fa-solid fa-square-check" aria-hidden="true"></i></button>
+  <button id="btnNext" class="icon-btn" type="button" title="Next"><i class="fa-solid fa-forward" aria-hidden="true"></i></button>
+  <button id="autoNextBtn" class="icon-btn auto-btn" type="button" aria-pressed="false" title="Auto Next"><i class="fa-solid fa-arrows-spin" aria-hidden="true"></i></button>
 
-            <div style="flex:1"></div>
+  <!-- spacer to push score box to the right -->
+  <div style="flex:1"></div>
 
-            <div class="score-area">
-              <div class="score" id="scoreText">Score: 0</div>
-            </div>
-          </div>
+  <!-- Score box: number + diamond icon, same height as segmented/main controls -->
+  <div class="score-box" id="scoreBox" title="Score" aria-live="polite" role="status" aria-atomic="true">
+    <span id="scoreValue">0</span>
+    <i class="fa-solid fa-diamond" aria-hidden="true" style="margin-left:8px"></i>
+  </div>
+</div>
+
         </section>
 
         <!-- STATS -->
@@ -1110,8 +1140,11 @@ button[disabled],
   voiceSelect.addEventListener('change', ()=> { settings.voice = voiceSelect.value || ''; persistSettings(); });
 
   // Utility UI helpers
-  function updateScore(){ scoreText.textContent = `Score: ${totalScore}`; }
-
+function updateScore(){
+  const el = document.getElementById('scoreValue');
+  if (el) el.textContent = String(totalScore);
+}
+  
   // Play button handler - counts user replay attempts in hardcore mode
   btnPlay.addEventListener('click', ()=>{
     if (!currentWord) { return; }
