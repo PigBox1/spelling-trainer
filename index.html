@@ -300,10 +300,10 @@ input.word-input:focus{outline:none;border-color:var(--muted-2)}
             <div class="settings-row">
               <div class="label">Difficulty</div>
               <div class="control">
-                <div class="segmented" id="segDifficulty">
-                  <button data-val="easy" type="button">Easy</button>
-                  <button data-val="advanced" type="button">Advanced</button>
-                  <button data-val="proficient" type="button">Proficient</button>
+                <div id="segDiff" class="segmented">
+                  <button data-val="easy" data-hover="A1–A2 level words">Easy</button>
+                  <button data-val="advanced" data-hover="B1–B2 level words">Advanced</button>
+                  <button data-val="proficient" data-hover="C1–C2 level words">Proficient</button>
                 </div>
               </div>
             </div>
@@ -311,10 +311,10 @@ input.word-input:focus{outline:none;border-color:var(--muted-2)}
             <div class="settings-row">
               <div class="label">Mode</div>
               <div class="control">
-                <div class="segmented" id="segMode">
-                  <button data-val="easy" type="button">Easy</button>
-                  <button data-val="normal" type="button">Normal</button>
-                  <button data-val="hardcore" type="button">Hardcore</button>
+                <div id="segMode" class="segmented mode">
+                  <button data-val="easy" data-hover="5 attempts, progressive hints">Easy</button>
+                  <button data-val="normal" data-hover="3 attempts, no help">Normal</button>
+                  <button data-val="hardcore" data-hover="1 attempt, limited audio replays">Hardcore</button>
                 </div>
               </div>
             </div>
