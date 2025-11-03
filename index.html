@@ -1557,6 +1557,50 @@ function updateScore(){
     startNewRound(false);
   })();
 
+// ===== Safe align play-row to match header nav =====
+(function safeAlignPlayRowWithNav(){
+  const card = document.querySelector('.card');
+  const nav  = document.querySelector('header nav');
+  const play = document.querySelector('.play-row');
+  if (!card || !nav || !play) return;
+
+  // limit how much padding we'll ever apply (prevents huge shifts)
+  const MAX_PADDING = 160; // pixels (adjust if your design needs wider)
+  const MIN_PADDING = 6;   // small safety floor
+
+  function applyAlignment(){
+    try {
+      const cRect = card.getBoundingClientRect();
+      const nRect = nav.getBoundingClientRect();
+      // nav left relative to card
+      let leftPad = Math.round(nRect.left - cRect.left);
+      if (!Number.isFinite(leftPad)) return;
+      // clamp to sane values so we don't break layout
+      leftPad = Math.max(MIN_PADDING, Math.min(MAX_PADDING, leftPad));
+      // apply symmetrical horizontal padding for visual centering
+      play.style.paddingLeft = leftPad + 'px';
+      play.style.paddingRight = leftPad + 'px';
+      // ensure the play-row doesn't exceed card width by forcing box-sizing
+      play.style.boxSizing = 'border-box';
+      // make sure input can still shrink correctly
+      const input = play.querySelector('input.word-input');
+      if (input) input.style.minWidth = '0';
+    } catch (err) {
+      // swallow errors so page won't break
+      console.warn('play-row align error', err);
+    }
+  }
+
+  // run once after fonts and layout settle
+  setTimeout(applyAlignment, 50);
+  // also run on load and resize (debounced)
+  let t = null;
+  function debounced(){ clearTimeout(t); t = setTimeout(applyAlignment, 60); }
+  window.addEventListener('load', applyAlignment);
+  window.addEventListener('resize', debounced);
+})();
+
+  
   // persist
   window.addEventListener('beforeunload', ()=>{ persistSettings(); persistStats(); persistDefinitionsCache(); });
 
