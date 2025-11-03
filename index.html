@@ -1031,6 +1031,22 @@ button[disabled],
     return null;
   }
 
+  // helper that updates the visible hintLine when a definition is available
+  function updateDisplayedDefinitionFor(word){
+    // only update if word matches currentWord and setting is 'before'
+    if (!word) return;
+    if (settings.defTiming !== 'before') return;
+    if (word !== currentWord) return; // stale fetch result
+    const cached = definitionsCache[word];
+    if (cached === undefined) {
+      hintLine.textContent = 'Looking up definition…';
+    } else if (cached === null) {
+      hintLine.innerHTML = '<strong>Definition:</strong> Definition unavailable';
+    } else {
+      hintLine.innerHTML = `<strong>Definition:</strong> ${escapeHtml(cached)}`;
+    }
+  }
+
 async function startNewRound(manual=false){
   if (manual && autoNextTimer){ clearTimeout(autoNextTimer); autoNextTimer = null; }
 
@@ -1092,28 +1108,34 @@ async function startNewRound(manual=false){
   // prefetch definition as soon as the word is loaded (cached to reduce repeated calls)
   (async ()=>{
     try {
-      if (!definitionsCache[currentWord]) {
+      // Only fetch if we don't have a cached key at all (i.e. undefined)
+      if (definitionsCache[currentWord] === undefined) {
         const variantsToTry = (window.variantsMap && window.variantsMap[currentWord]) || [currentWord];
+        // show looking up while fetching if 'before'
+        if (settings.defTiming === 'before') hintLine.textContent = 'Looking up definition…';
         const def = await fetchDefinitionForVariants(variantsToTry);
+        // store explicit null when missing so we won't loop forever
         definitionsCache[currentWord] = def || null;
         persistDefinitionsCache();
+        // update UI if needed and if still on same word
+        updateDisplayedDefinitionFor(currentWord);
+      } else {
+        // we already have an explicit cached value (possibly null); update immediately
+        updateDisplayedDefinitionFor(currentWord);
       }
     } catch(e){
       console.warn('prefetch definition failed', e);
+      // ensure UI doesn't stay stuck on "Looking up..." if something went wrong
+      if (settings.defTiming === 'before') {
+        hintLine.innerHTML = '<strong>Definition:</strong> Definition unavailable';
+      }
     }
   })();
 
   // if user wants to see definition BEFORE guessing, display cached def immediately
+  // (updateDisplayedDefinitionFor will also refresh once the fetch completes)
   if (settings.defTiming === 'before') {
-    const cached = definitionsCache[currentWord];
-    if (cached === undefined) {
-      // will be fetched in the background; optionally show "Looking up definition..."
-      hintLine.textContent = 'Looking up definition…';
-    } else if (cached === null) {
-      hintLine.innerHTML = '<strong>Definition:</strong> Definition unavailable';
-    } else {
-      hintLine.innerHTML = `<strong>Definition:</strong> ${escapeHtml(cached)}`;
-    }
+    updateDisplayedDefinitionFor(currentWord);
   } else {
     // hide definition now (will show only after round ends)
     hintLine.textContent = '';
