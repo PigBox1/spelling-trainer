@@ -236,14 +236,23 @@ button[disabled],
   border: var(--ui-border) solid var(--muted-2);
   border-radius: var(--ui-radius);
   background: transparent;
+  color: var(--muted-2); /* icon color matches outline */
   cursor: pointer;
   transition: all 0.25s ease;
 }
 
+/* completely transparent hover */
+.stats-wipe-btn:hover,
+.stats-wipe-btn:active,
+.stats-wipe-btn:focus {
+  background: transparent !important;
+  box-shadow: none;
+}
+
+/* red accent hover for outline + icon */
 .stats-wipe-btn:hover {
   border-color: var(--accent-red);
   color: var(--accent-red);
-  background: transparent;
 }
 
 .stats-wipe-btn:hover i {
@@ -251,6 +260,15 @@ button[disabled],
   transform: scale(1.08);
   transition: color 0.15s ease, transform 0.15s ease;
 }
+
+/* ensure the icon stays in sync with outline color */
+.stats-wipe-btn i {
+  font-size: 18px;
+  color: var(--muted-2);
+  line-height: 1;
+  transition: transform 0.15s ease, color 0.15s ease;
+}
+
 
 /* --- Hint / Result --- */
 .result {
