@@ -6,233 +6,537 @@
 <title>Spelling Trainer</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer"/>
 <style>
-:root{
-  --page-bg:#eceff1;
-  --card-bg:#ffffff;
-  --muted:#cfcfcf;
-  --muted-2:#bfbfbf;
-  --accent-green:#4CAF50;
-  --accent-yellow:#FFC107;
-  --accent-red:#F44336;
-  --card-width:1100px;
-  --shadow:0 10px 30px rgba(20,20,30,0.06);
-  --mono:ui-monospace, SFMono-Regular, Menlo, Monaco, "Roboto Mono", "Courier New", monospace;
+:root {
+  --page-bg: #eceff1;
+  --card-bg: #ffffff;
+  --muted: #cfcfcf;
+  --muted-2: #bfbfbf;
+  --accent-green: #4CAF50;
+  --accent-yellow: #FFC107;
+  --accent-red: #F44336;
+  --card-width: 760px;
+  --shadow: 0 10px 30px rgba(20,20,30,0.06);
+  --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, "Roboto Mono", "Courier New", monospace;
 
-  /* unified metrics */
-  --ui-radius:8px;
-  --ui-border:2px;
-  --main-icon-size:48px;
-  --gap:12px; /* used to keep spacing consistent */
+  /* Unified UI metrics */
+  --ui-radius: 8px;
+  --ui-border: 2px;
+  --main-icon-size: 48px;
 }
 
-/* ---------- Base layout ---------- */
-html,body{height:100%;margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial;background:var(--page-bg);color:#222}
-.wrap{min-height:100%;display:flex;align-items:center;justify-content:center;padding:28px}
-.card{width:100%;max-width:var(--card-width);background:var(--card-bg);border-radius:var(--ui-radius);box-shadow:var(--shadow);padding:20px 28px;box-sizing:border-box}
-
-/* ---------- Header / nav ---------- */
-header{display:flex;align-items:center;justify-content:space-between;gap:18px;margin-bottom:12px}
-
-/* left area / title */
-.header-left{display:flex;align-items:center;gap:12px;min-width:200px}
-header h1{font-size:16px;margin:0;font-weight:700;line-height:1.05} /* smaller title as requested */
-
-/* tabs: keep equal spacing to top as to right (use padding-top to match right gap) */
-nav{display:flex;gap:var(--gap);align-items:center;margin-left:8px;padding-top:var(--gap)}
-nav button{background:transparent;border:var(--ui-border) solid var(--muted-2);border-radius:var(--ui-radius);color:var(--muted-2);font-weight:700;padding:8px 14px;cursor:pointer;transition:all .20s ease;white-space:nowrap}
-nav button:hover{background:rgba(0,0,0,0.03);color:#111}
-nav button.active{border-color:var(--accent-green);color:var(--accent-green);background:transparent}
-
-/* ---------- Play row ---------- */
-.play-row{display:flex;align-items:center;gap:var(--gap);margin-bottom:20px;width:100%;box-sizing:border-box}
-
-/* input aligned to match icon height and slightly wider */
-input.word-input{
-  flex:1;height:var(--main-icon-size);border-radius:var(--ui-radius);border:var(--ui-border) solid var(--muted-2);
-  font-size:16px;background:transparent;color:#111;padding:0 16px;box-sizing:border-box;min-width:340px;transition:all .20s ease;
+/* --- Base Layout --- */
+html, body {
+  height: 100%;
+  margin: 0;
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial;
+  background: var(--page-bg);
+  color: #222;
 }
-input.word-input:focus{outline:none;border-color:var(--muted-2)}
 
-/* ---------- Play button (square) ---------- */
-.btn-play{width:var(--main-icon-size);height:var(--main-icon-size);padding:0;display:inline-flex;align-items:center;justify-content:center;border-radius:var(--ui-radius);border:var(--ui-border) solid var(--muted-2);background:transparent;color:var(--muted-2);cursor:pointer}
-.btn-play i{font-size:18px;transition:transform .12s ease}
-.btn-play:hover i{transform:scale(1.08)}
+.wrap {
+  min-height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 28px;
+}
 
-/* ---------- Controls row (left icons + spacer + score box on right) ----------
-   Ensure the HTML for this row has a container with class="controls" (or "controls-row"). */
-.controls,
-.controls-row,
-.game-controls{display:flex;align-items:center;gap:var(--gap);width:100%;box-sizing:border-box;margin-top:12px;flex-wrap:nowrap}
+.card {
+  width: 100%;
+  max-width: var(--card-width);
+  background: var(--card-bg);
+  border-radius: var(--ui-radius);
+  box-shadow: var(--shadow);
+  padding: 20px;
+  box-sizing: border-box;
+}
 
-/* icon buttons (check/next/autonext) */
+/* --- Header & Navigation --- */
+header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+header h1 {
+  font-size: 18px;
+  margin: 0;
+}
+
+nav {
+  display: flex;
+  gap: 8px;
+}
+
+/* Transparent tab style to match new vibe */
+nav button {
+  background: transparent;
+  border: var(--ui-border) solid var(--muted-2);
+  border-radius: var(--ui-radius);
+  color: var(--muted-2);
+  font-weight: 700;
+  padding: 8px 14px;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+nav button:hover {
+  background: rgba(0,0,0,0.03);
+  color: #111;
+}
+
+nav button.active {
+  border-color: var(--accent-green);
+  color: var(--accent-green);
+  background: rgba(76,175,80,0.08);
+}
+
+/* --- Input Fields --- */
+input.word-input {
+  flex: 1;
+  height: var(--main-icon-size);
+  border-radius: var(--ui-radius);
+  border: var(--ui-border) solid var(--muted-2);
+  font-size: 16px;
+  background: transparent;
+  color: #111;
+  padding: 0 16px;
+  box-sizing: border-box;
+  min-width: 350px;
+  transition: all 0.25s ease;
+}
+
+input.word-input:focus {
+  outline: none;
+  border-color: var(--muted-2);
+}
+
+/* --- Universal Button Reset --- */
+button,
 .icon-btn,
-.auto-btn{width:var(--main-icon-size);height:var(--main-icon-size);padding:0;display:inline-flex;align-items:center;justify-content:center;border-radius:var(--ui-radius);border:var(--ui-border) solid var(--muted-2);background:transparent;color:var(--muted-2);cursor:pointer}
-.icon-btn i,.auto-btn i{font-size:18px;transition:transform .12s ease,color .12s ease}
-.icon-btn:hover i,.auto-btn:hover i{transform:scale(1.08)}
-
-/* Auto Next checked state: green border + light green tint */
-.auto-btn.checked{border-color:var(--accent-green);color:var(--accent-green);background:rgba(76,175,80,0.06)}
-
-/* spacer: if you use a <div class="spacer"></div>, it should be here; otherwise .score-box margin-left:auto handles alignment */
-.controls .spacer{flex:1;min-width:10px}
-
-/* ---------- Score box ---------- */
-.score-box{margin-left:auto;display:inline-flex;align-items:center;justify-content:center;gap:8px;height:var(--main-icon-size);min-width:92px;padding:0 16px;border:var(--ui-border) solid var(--muted-2);border-radius:var(--ui-radius);background:transparent;color:#111;font-size:16px;font-weight:500;box-sizing:border-box}
-.score-box i{font-size:14px;color:var(--muted-2)}
-
-/* ---------- Segmented controls ---------- */
-.segmented{display:flex;gap:12px;border-radius:var(--ui-radius);padding:6px 0;background:transparent;margin:0;width:100%;box-sizing:border-box}
-.segmented button{flex:1;border:var(--ui-border) solid var(--muted-2);border-radius:var(--ui-radius);color:#666;font-weight:700;padding:8px 10px;background:transparent}
-
-/* outline-only toggle look */
-.segmented button.on{background:transparent}
-
-/* Difficulty coloring (unchanged) */
-.segmented button[data-val="easy"].on{border-color:var(--accent-green);color:var(--accent-green)}
-.segmented button[data-val="advanced"].on{border-color:var(--accent-yellow);color:var(--accent-yellow)}
-.segmented button[data-val="proficient"].on{border-color:var(--accent-red);color:var(--accent-red)}
-
-/* Mode coloring specifically for the game-mode segmented (targeted by id #segMode) */
-/* Extra-specific selectors so they don't collide with the difficulty segmented */
-#segMode button[data-val="easy"].on{border-color:var(--accent-green);color:var(--accent-green)}
-#segMode button[data-val="normal"].on{border-color:var(--accent-yellow);color:var(--accent-yellow)}
-#segMode button[data-val="hardcore"].on{border-color:var(--accent-red);color:var(--accent-red)}
-
-/* ---------- Wipe button (transparent, fixed behavior) ---------- */
-.stats-wipe-btn{width:44px;height:44px;padding:0;display:inline-flex;align-items:center;justify-content:center;border:var(--ui-border) solid var(--muted-2);border-radius:var(--ui-radius);background:transparent !important;color:var(--muted-2);cursor:pointer;box-shadow:none !important;transition:border-color .18s ease,color .18s ease,transform .12s ease}
-.stats-wipe-btn i{font-size:18px;color:var(--muted-2);transition:color .18s ease,transform .12s ease}
-.stats-wipe-btn:hover{border-color:var(--accent-red);color:var(--accent-red);background:transparent !important}
-.stats-wipe-btn:hover i{color:var(--accent-red);transform:scale(1.08)}
-.stats-wipe-btn:focus-visible{outline:none !important;box-shadow:none !important}
-
-/* ---------- Feedback / progress bars ---------- */
-.feedback-wrap{width:100%;display:flex;justify-content:center;margin-top:8px}
-.feedback-bar{width:100%;display:flex;gap:10px;position:relative;align-items:center;padding:6px 0}
-.segment{flex:1;height:14px;background:var(--muted);border-radius:var(--ui-radius);transition:background .22s}
-
-/* ---------- Score animation helper (optional) ---------- */
-.score-box.animate{transform:scale(1.06);transition:transform .18s ease}
-
-/* ---------- Custom-styled select (TTS voice dropdown) ---------- */
-/* This styles the native select to look custom: caret on the right, same outline radius, transparent background */
-.select {
-  -webkit-appearance: none;
-  -moz-appearance: none;
-  appearance: none;
-  width:100%;
-  padding:10px 40px 10px 12px; /* leave space for caret */
-  border-radius:var(--ui-radius);
-  border:var(--ui-border) solid var(--muted-2);
-  background:transparent;
-  color:#111;
-  font-size:14px;
-  box-sizing:border-box;
-  cursor:pointer;
-  transition:all .18s ease;
+.btn-play,
+.auto-btn,
+.segmented button,
+.stats-wipe-btn {
+  border-radius: var(--ui-radius);
+  border: var(--ui-border) solid var(--muted-2);
+  background: transparent;
+  color: var(--muted-2);
+  cursor: pointer;
+  transition: all 0.25s ease;
 }
 
-/* caret (uses an SVG data URI) */
-.select {
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath fill='%23bfbfbf' d='M0 0l5 6 5-6z'/%3E%3C/svg%3E");
-  background-repeat: no-repeat;
-  background-position: right 12px center;
-  background-size: 10px 6px;
+/* --- Icon Buttons (Main Game Controls) --- */
+.btn-play,
+.icon-btn,
+.auto-btn {
+  width: var(--main-icon-size);
+  height: var(--main-icon-size);
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
 }
 
-/* focus state */
-.select:focus{outline:none;border-color:var(--muted-2)}
-
-/* ---------- Stats list layout ---------- */
-.stats-list{display:flex;flex-direction:column;gap:8px;margin-top:8px}
-.stat-row{display:flex;gap:12px;align-items:center;justify-content:space-between;padding:8px;border-radius:var(--ui-radius);background:#fbfbfb;border:var(--ui-border) solid #f0f0f0}
-.stat-left{display:flex;align-items:center;gap:8px;flex:1;font-weight:600}
-.stat-right{display:flex;align-items:center;gap:12px;width:300px;justify-content:flex-end}
-
-/* ---------- Responsive tweaks ---------- */
-@media (max-width:980px){
-  :root{--card-width:920px}
-  .card{padding:18px}
-  input.word-input{min-width:240px}
-  .score-box{min-width:80px;padding:0 12px}
-}
-@media (max-width:760px){
-  :root{--main-icon-size:44px}
-  .card{padding:14px}
-  .header-left{min-width:120px}
-  .segment{height:12px}
-  .stat-right{width:200px}
-  .segmented{gap:8px}
-  .play-row,.controls{gap:10px}
-  nav button{padding:6px 10px}
-  .select{padding-right:36px}
-
-/* --- Settings Tooltips & Hover Accents --- */
-
-/* shared tooltip base */
-[data-hover]:hover::after {
-  content: attr(data-hover);
-  position: absolute;
-  bottom: calc(100% + 6px);
-  left: 50%;
-  transform: translateX(-50%);
-  background: #333;
-  color: #fff;
-  font-size: 12px;
-  padding: 4px 8px;
-  border-radius: 6px;
-  white-space: nowrap;
-  pointer-events: none;
-  opacity: 0;
-  animation: tooltipFade 0.25s ease forwards;
-  z-index: 20;
+.btn-play i,
+.icon-btn i,
+.auto-btn i,
+.stats-wipe-btn i {
+  font-size: 18px;
+  color: inherit;
+  line-height: 1;
 }
 
-/* smooth fade animation for tooltips */
-@keyframes tooltipFade {
-  from { opacity: 0; transform: translate(-50%, 4px); }
-  to { opacity: 1; transform: translate(-50%, 0); }
+button:hover,
+.icon-btn:hover,
+.btn-play:hover,
+.auto-btn:hover,
+.segmented button:hover,
+.stats-wipe-btn:hover {
+  background: rgba(0,0,0,0.03);
+  color: #111;
 }
 
-/* ensure segmented buttons have proper position for tooltips */
-.segmented button {
+button:active,
+.icon-btn:active,
+.btn-play:active {
+  background: rgba(0,0,0,0.08);
+}
+
+button[disabled],
+.icon-btn[disabled],
+.btn-play[disabled],
+.auto-btn[disabled] {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* --- Toggle / Active States --- */
+.segmented button.on {
+  border-color: var(--accent-green);
+  color: var(--accent-green);
+  background: transparent;
+}
+
+/* Difficulty colors — outline only */
+.segmented button[data-val="easy"].on {
+  border-color: var(--accent-green);
+  color: var(--accent-green);
+  background: transparent;
+}
+
+.segmented button[data-val="advanced"].on {
+  border-color: var(--accent-yellow);
+  color: var(--accent-yellow);
+  background: transparent;
+}
+
+.segmented button[data-val="proficient"].on {
+  border-color: var(--accent-red);
+  color: var(--accent-red);
+  background: transparent;
+}
+
+/* Mode colors — outline only */
+.segmented button[data-val="easy"].on[data-group="mode"] {
+  border-color: var(--accent-green);
+  color: var(--accent-green);
+  background: transparent;
+}
+
+.segmented button[data-val="normal"].on {
+  border-color: var(--accent-yellow);
+  color: var(--accent-yellow);
+  background: transparent;
+}
+
+.segmented button[data-val="hardcore"].on {
+  border-color: var(--accent-red);
+  color: var(--accent-red);
+  background: transparent;
+}
+
+/* Auto Next toggle */
+.auto-btn.checked {
+  border-color: var(--accent-green);
+  color: var(--accent-green);
+  background: rgba(76,175,80,0.08);
+}
+
+/* --- Wipe Button (transparent, red hover accent) --- */
+.stats-wipe-btn {
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: var(--ui-border) solid var(--muted-2);
+  border-radius: var(--ui-radius);
+  background: transparent;
+  color: var(--muted-2); /* icon color matches outline */
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+/* completely transparent hover */
+.stats-wipe-btn:hover,
+.stats-wipe-btn:active,
+.stats-wipe-btn:focus {
+  background: transparent !important;
+  box-shadow: none;
+}
+
+/* red accent hover for outline + icon */
+.stats-wipe-btn:hover {
+  border-color: var(--accent-red);
+  color: var(--accent-red);
+}
+
+.stats-wipe-btn:hover i {
+  color: var(--accent-red);
+  transform: scale(1.08);
+  transition: color 0.15s ease, transform 0.15s ease;
+}
+
+/* ensure the icon stays in sync with outline color */
+.stats-wipe-btn i {
+  font-size: 18px;
+  color: var(--muted-2);
+  line-height: 1;
+  transition: transform 0.15s ease, color 0.15s ease;
+}
+
+
+/* --- Hint / Result --- */
+.result {
+  font-weight: 700;
+  color: #444;
+  flex: 1;
+  text-align: center;
+}
+
+.hint-line {
+  margin-top: 8px;
+  font-family: var(--mono);
+  color: #999;
+  text-align: center;
+  min-height: 20px;
+  transition: opacity 0.25s ease;
+}
+
+/* --- Feedback Bars --- */
+.feedback-wrap {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  margin-top: 8px;
+}
+
+.feedback-bar {
+  width: 100%;
+  display: flex;
+  gap: 10px;
   position: relative;
-  overflow: visible;
+  align-items: center;
+  padding: 6px 0;
 }
 
-/* difficulty hover accents */
-.segmented button[data-val="easy"]:hover {
+.segment {
+  flex: 1;
+  height: 14px;
+  background: var(--muted);
+  border-radius: var(--ui-radius);
+  transition: background 0.22s ease, flex 0.22s ease, width 0.22s ease;
+  position: relative;
+}
+
+.merged {
+  position: absolute;
+  height: 14px;
+  background: var(--accent-green);
+  border-radius: var(--ui-radius);
+  transition: left 0.22s ease, width 0.22s ease, opacity 0.22s ease;
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* --- Controls --- */
+.controls {
+  display: flex;
+  gap: 10px;
+  margin-top: 12px;
+  align-items: center;
+}
+
+/* --- Score box (right-aligned, outlined, consistent with textbox style) --- */
+.score-box {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  height: var(--main-icon-size);
+  min-width: 88px;
+  padding: 0 16px;
+  border: var(--ui-border) solid var(--muted-2);
+  border-radius: var(--ui-radius);
+  background: transparent;
+  color: #111;
+  font-size: 16px;
+  font-weight: 500; /* same as textbox weight */
+  box-sizing: border-box;
+}
+
+/* make icon match outline color */
+.score-box i {
+  font-size: 14px;
+  color: var(--muted-2);
+  line-height: 1;
+}
+
+/* value styling */
+#scoreValue {
+  font-size: 16px;
+  white-space: nowrap;
+  color: inherit;
+}
+
+/* subtle hover feedback */
+.score-box:hover {
+  background: rgba(0,0,0,0.02);
+}
+
+
+/* --- Segmented Controls --- */
+.segmented {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;                /* same spacing as play row */
+  border-radius: var(--ui-radius);
+  padding: 6px 0;
+  background: transparent;
+  margin-bottom: 20px;      /* aligns visually with play-row’s offset */
+}
+
+.segmented button {
+  flex: 1;
+  border: var(--ui-border) solid var(--muted-2);
+  border-radius: var(--ui-radius);
+  color: #666;
+  font-weight: 700;
+  padding: 8px 10px;
+  background: transparent;
+}
+
+/* --- Settings Rows --- */
+.settings-row {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  margin: 8px 0;
+}
+
+.label {
+  min-width: 110px;
+  font-size: 14px;
+  color: #666;
+}
+
+.control {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* --- Select --- */
+.select {
+  padding: 10px 12px;
+  border-radius: var(--ui-radius);
+  border: var(--ui-border) solid var(--muted-2);
+  background: transparent;
+  font-size: 14px;
+  width: 100%;
+  box-sizing: border-box;
+  color: #111;
+  transition: all 0.25s ease;
+}
+
+.select:focus {
   border-color: var(--accent-green);
-  color: var(--accent-green);
+  outline: none;
 }
 
-.segmented button[data-val="advanced"]:hover {
-  border-color: var(--accent-yellow);
-  color: var(--accent-yellow);
+/* --- Stats Section --- */
+.stats-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 8px;
 }
 
-.segmented button[data-val="proficient"]:hover {
-  border-color: var(--accent-red);
-  color: var(--accent-red);
+.stat-row {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px;
+  border-radius: var(--ui-radius);
+  background: #fbfbfb;
+  border: var(--ui-border) solid #f0f0f0;
 }
 
-/* game mode hover accents */
-#segMode button[data-val="easy"]:hover {
-  border-color: var(--accent-green);
-  color: var(--accent-green);
+.stat-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1;
+  font-weight: 600;
 }
 
-#segMode button[data-val="normal"]:hover {
-  border-color: var(--accent-yellow);
-  color: var(--accent-yellow);
+.stat-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 300px;
+  justify-content: flex-end;
 }
 
-#segMode button[data-val="hardcore"]:hover {
-  border-color: var(--accent-red);
-  color: var(--accent-red);
+/* --- Mini Stats Bars --- */
+.mini-bar {
+  display: flex;
+  gap: 6px;
+  width: 180px;
+  height: 12px;
+  align-items: center;
+  position: relative;
 }
 
-  
+.mini-seg {
+  flex: 1;
+  height: 100%;
+  border-radius: var(--ui-radius);
+  background: var(--muted);
+  position: relative;
+  transition: background 0.18s ease;
 }
+
+/* --- Tooltip --- */
+.mini-tooltip {
+  position: fixed;
+  z-index: 9999;
+  padding: 6px 8px;
+  border-radius: 6px;
+  color: #fff;
+  font-weight: 700;
+  font-size: 12px;
+  white-space: pre-line;
+  pointer-events: none;
+  transform: translateY(-6px);
+  opacity: 0;
+  transition: opacity 0.12s ease, transform 0.12s ease;
+}
+
+/* --- Misc --- */
+.small {
+  font-size: 13px;
+  color: #666;
+}
+
+.play-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;                /* spacing between items */
+  margin-bottom: 20px;      /* same bottom spacing as segmented group */
+}
+
+/* --- Responsive --- */
+@media (max-width: 760px) {
+  .card { padding: 14px; }
+  .stat-right { width: 200px; }
+  .label { min-width: 84px; }
+  .result { font-size: 14px; text-align: center; }
+  :root { --main-icon-size: 44px; }
+  .btn-play i,
+  .icon-btn i,
+  .auto-btn i,
+  .stats-wipe-btn i {
+    font-size: 18px;
+    line-height: 1;
+    color: inherit;
+    transition: transform 0.15s ease, color 0.15s ease;
+  }
+  .btn-play:hover i,
+  .icon-btn:hover i,
+  .auto-btn:hover i,
+  .stats-wipe-btn:hover i {
+    transform: scale(1.08);
+  }
+}
+
 </style>
 </head>
 <body>
@@ -300,10 +604,10 @@ input.word-input:focus{outline:none;border-color:var(--muted-2)}
             <div class="settings-row">
               <div class="label">Difficulty</div>
               <div class="control">
-                <div id="segDiff" class="segmented">
-                  <button data-val="easy" data-hover="A1–A2 level words">Easy</button>
-                  <button data-val="advanced" data-hover="B1–B2 level words">Advanced</button>
-                  <button data-val="proficient" data-hover="C1–C2 level words">Proficient</button>
+                <div class="segmented" id="segDifficulty">
+                  <button data-val="easy" type="button">Easy</button>
+                  <button data-val="advanced" type="button">Advanced</button>
+                  <button data-val="proficient" type="button">Proficient</button>
                 </div>
               </div>
             </div>
@@ -311,10 +615,10 @@ input.word-input:focus{outline:none;border-color:var(--muted-2)}
             <div class="settings-row">
               <div class="label">Mode</div>
               <div class="control">
-                <div id="segMode" class="segmented mode">
-                  <button data-val="easy" data-hover="5 attempts, progressive hints">Easy</button>
-                  <button data-val="normal" data-hover="3 attempts, no help">Normal</button>
-                  <button data-val="hardcore" data-hover="1 attempt, limited audio replays">Hardcore</button>
+                <div class="segmented" id="segMode">
+                  <button data-val="easy" type="button">Easy</button>
+                  <button data-val="normal" type="button">Normal</button>
+                  <button data-val="hardcore" type="button">Hardcore</button>
                 </div>
               </div>
             </div>
