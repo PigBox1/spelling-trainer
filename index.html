@@ -14,6 +14,7 @@
   --accent-green: #4CAF50;
   --accent-yellow: #FFC107;
   --accent-red: #F44336;
+  --inner-pad: 28px; /* shared horizontal inset used by header & play row */
   --card-width: 760px;
   --shadow: 0 10px 30px rgba(20,20,30,0.06);
   --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, "Roboto Mono", "Courier New", monospace;
@@ -47,17 +48,19 @@ html, body {
   background: var(--card-bg);
   border-radius: var(--ui-radius);
   box-shadow: var(--shadow);
-  padding: 20px;
+  padding: 20px var(--inner-pad) 28px var(--inner-pad);
   box-sizing: border-box;
 }
 
 /* --- Header & Navigation --- */
 header {
-  display: flex;
+  display: grid;
+  grid-template-columns: 1fr auto;
   align-items: center;
-  justify-content: space-between;
-  margin-bottom: 12px;
+  gap: 12px;
+  margin-bottom: 18px;
 }
+
 
 header h1 {
   font-size: 18px;
@@ -110,6 +113,8 @@ input.word-input {
 input.word-input:focus {
   outline: none;
   border-color: var(--muted-2);
+  flex: 1 1 auto;
+  min-width: 0;
 }
 
 /* --- Universal Button Reset --- */
@@ -544,8 +549,6 @@ button[disabled],
   align-items: center;
   gap: 12px;
   margin-bottom: 20px;
-  margin-left: -2px; /* compensate for border width */
-  margin-right: -2px; /* keeps it perfectly aligned with tabs */
 }
 
 .play-row .btn-play {
@@ -561,6 +564,15 @@ button[disabled],
   box-sizing: border-box;
 }
 
+.play-row-inner {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  justify-content: flex-end; /* keeps buttons aligned with the nav on the right */
+}
+
+  
 .play-row .result {
   flex: 0 0 auto;
   max-width: 100px;
