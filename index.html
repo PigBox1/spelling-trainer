@@ -232,22 +232,38 @@ button[disabled],
 
 /* --- Wipe Button (transparent idle, grey outline, red hover) --- */
 .stats-wipe-btn {
-  width: var(--main-icon-size);
-  height: var(--main-icon-size);
+  width: 44px;
+  height: 44px;
   padding: 0;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  box-sizing: border-box;
+  border: var(--ui-border) solid var(--muted-2);
+  border-radius: var(--ui-radius);
+  background: transparent !important;
+  color: var(--muted-2); /* grey matches outline */
+  cursor: pointer;
+  transition:
+    border-color 0.18s ease,
+    color 0.18s ease,
+    transform 0.12s ease;
+}
+
+/* icon matches the button color exactly */
+.stats-wipe-btn i {
+  font-size: 18px;
+  color: currentColor;
+  line-height: 1;
+  transition: color 0.15s ease, transform 0.12s ease;
 }
 
 /* hover: red accent for both icon + outline */
 .stats-wipe-btn:hover,
 .stats-wipe-btn:focus {
-  background: transparent;
+  background: transparent !important;
   border-color: var(--accent-red);
   color: var(--accent-red);
-  outline: none;
+  outline: none !important;
 }
 
 .stats-wipe-btn:hover i {
@@ -258,6 +274,7 @@ button[disabled],
 .stats-wipe-btn:active i {
   transform: scale(1);
 }
+
 /* --- Hint / Result --- */
 .result {
   font-weight: 700;
@@ -511,18 +528,9 @@ button[disabled],
   .btn-play i,
   .icon-btn i,
   .auto-btn i,
-  .stats-wipe-btn i {
-    font-size: 18px;
-    line-height: 1;
-    color: inherit;
-    transition: transform 0.15s ease, color 0.15s ease;
-  }
   .btn-play:hover i,
   .icon-btn:hover i,
   .auto-btn:hover i,
-  .stats-wipe-btn:hover i {
-    transform: scale(1.08);
-  }
 }
 
 </style>
