@@ -152,13 +152,23 @@ button,
 button:hover,
 .icon-btn:hover,
 .btn-play:hover,
-.auto-btn:hover,
 .segmented button:hover,
 .stats-wipe-btn:hover {
   background: rgba(0,0,0,0.03);
   color: #111;
 }
 
+.auto-btn:hover {
+  background: rgba(0, 0, 0, 0.03);
+  transform: scale(1.05);
+}
+
+.auto-btn.checked {
+  border-color: var(--accent-green);
+  color: var(--accent-green);
+  background: rgba(76, 175, 80, 0.1);
+}
+  
 button:active,
 .icon-btn:active,
 .btn-play:active {
