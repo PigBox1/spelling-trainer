@@ -55,34 +55,73 @@ input.word-input{flex:1;padding:10px 12px;border-radius:12px;border:1px solid #e
 .score-area { position:relative; display:flex; align-items:center; gap:8px; min-width:110px; justify-content:flex-end }
 .score { font-weight:800; color:#222 }
 
-/* checkbox-style square auto-next control */
+/* Auto Next - replaced styles (paste in place of previous .check-btn block) */
 .check-btn {
-  display:inline-flex;
-  align-items:center;
-  gap:12px;
-  padding:8px 12px;
-  border-radius:12px;
-  border:1px solid transparent;
-  background:var(--muted-2);
-  cursor:pointer;
-  min-height:44px;
-  box-sizing:border-box;
-  color:#fff;
-  font-weight:700;
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-between; /* keeps label left, box right */
+  gap: 12px;
+  padding: 0 14px;                 /* horizontal padding to match other buttons */
+  height: 44px;                    /* same height as other buttons */
+  border-radius: 12px;             /* same corner rounding */
+  border: 1px solid transparent;
+  background: var(--muted-2);      /* same base background as other buttons */
+  color: #fff;
+  cursor: pointer;
+  min-width: 140px;
+  box-sizing: border-box;
+  font-weight: 700;
+  line-height: 1;
 }
-.check-btn .label { color:#fff; font-weight:700; }
+
+/* Label inherits the color so it never disappears */
+.check-btn .label { color: inherit; }
+
+/* The right-side small square box (empty state) */
 .check-btn .box {
-  width:22px; height:22px;
-  border-radius:6px;
-  background:transparent;
-  border:2px solid rgba(255,255,255,0.35);
-  display:flex; align-items:center; justify-content:center;
+  width: 22px;
+  height: 22px;
+  border-radius: 6px;
+  background: transparent;
+  border: 2px solid rgba(255,255,255,0.35);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: 8px; /* space between label and box */
+  box-sizing: border-box;
+  position: relative;
 }
+
+/* tiny inner square that fills when checked (created via pseudo-element) */
+.check-btn .box::after{
+  content: "";
+  display: block;
+  width: 12px;
+  height: 12px;
+  border-radius: 3px;
+  background: transparent;
+  transition: background .18s ease, transform .18s ease;
+  transform: scale(1);
+}
+
+/* When checked: keep the button background (no white) and fill the inner square */
 .check-btn.checked {
-  background:#ffffff; color:#111; border:1px solid rgba(0,0,0,0.06);
+  background: var(--muted-2);      /* keep same look so text stays visible */
+  color: #fff;
+  border-color: transparent;
+  box-shadow: none;
 }
-.check-btn.checked .box { background:var(--accent-green); border-color:transparent; }
-.check-btn.checked .box i { color:#fff; font-size:12px; }
+
+/* fill the inner square with the green accent when checked */
+.check-btn.checked .box::after{
+  background: var(--accent-green);
+}
+
+/* keep the check icon hidden (if present) — we use the filled inner square instead */
+.check-btn .box i { display: none; }
+
+/* Optional: slightly darker border when not hovered, improve spacing */
+.check-btn:hover { filter: brightness(0.98); }
 
 /* settings segmented controls */
 .segmented { display:flex; gap:6px; background:transparent; border-radius:10px; padding:6px }
@@ -722,3 +761,4 @@ input.word-input{flex:1;padding:10px 12px;border-radius:12px;border:1px solid #e
 </script>
 </body>
 </html>
+
