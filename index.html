@@ -235,44 +235,34 @@ button[disabled],
   justify-content: center;
   border: var(--ui-border) solid var(--muted-2);
   border-radius: var(--ui-radius);
-  background: transparent !important;    /* override any inline/styling */
-  color: var(--muted-2);
+  background: transparent !important;
+  color: var(--muted-2);                /* outline + icon share this */
   cursor: pointer;
   box-shadow: none !important;
-  transition: border-color 0.18s ease, color 0.18s ease, transform 0.12s ease;
+  transition:
+    border-color 0.18s ease,
+    color 0.18s ease,
+    transform 0.12s ease;
 }
 
-/* ensure no background appears in any state */
+/* hover + focus (red accent) */
 .stats-wipe-btn:hover,
-.stats-wipe-btn:active,
 .stats-wipe-btn:focus,
 .stats-wipe-btn:focus-visible {
   background: transparent !important;
-  box-shadow: none !important;
-  outline: none !important;
-}
-
-/* icon defaults to outline color */
-.stats-wipe-btn i {
-  font-size: 18px;
-  color: var(--muted-2);
-  line-height: 1;
-  transition: color 0.15s ease, transform 0.12s ease;
-}
-
-/* hover: red border + red icon scale */
-.stats-wipe-btn:hover {
   border-color: var(--accent-red);
-  color: var(--accent-red);
+  color: var(--accent-red);             /* makes icon red too */
+  outline: none !important;
+  box-shadow: none !important;
 }
 
 .stats-wipe-btn:hover i {
-  color: var(--accent-red);
   transform: scale(1.08);
 }
 
-/* pressed: little reset so it doesn't stay scaled */
-.stats-wipe-btn:active i { transform: scale(1); }
+.stats-wipe-btn:active i {
+  transform: scale(1);
+}
 
 /* --- Hint / Result --- */
 .result {
