@@ -113,6 +113,74 @@ input.word-input{flex:1;padding:10px 12px;border-radius:12px;border:1px solid #e
   .label{min-width:84px}
   .result{ font-size:14px; text-align:center; }
 }
+
+  /* --- Make main game buttons perfect squares --- */
+/* Put this AFTER your existing styles so it overrides previous width/padding rules. */
+
+:root {
+  --main-icon-size: 48px; /* change to 40/44/56 if you want bigger/smaller squares */
+}
+
+/* Base square style for all game-row icon buttons */
+.btn-play,
+.icon-btn,
+.auto-btn {
+  width: var(--main-icon-size) !important;
+  height: var(--main-icon-size) !important;
+  padding: 0 !important;               /* remove horizontal padding so it's a square */
+  min-width: 0 !important;             /* override any min-width */
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border-radius: 12px !important;      /* match other buttons' rounding */
+  box-sizing: border-box !important;
+}
+
+/* keep icon size legible inside the square */
+.btn-play i,
+.icon-btn i,
+.auto-btn i {
+  font-size: 18px; /* tweak for balance; increase to 20-22 for larger squares */
+  line-height: 1;
+  pointer-events: none;
+}
+
+/* ensure the auto-btn (which previously had extra padding/checked state) still styles correctly */
+.auto-btn {
+  padding: 0 !important;
+}
+
+/* hover & focus visual stability */
+.btn-play:hover,
+.icon-btn:hover,
+.auto-btn:hover,
+.btn-play:focus,
+.icon-btn:focus,
+.auto-btn:focus {
+  filter: brightness(.98);
+  outline: none;
+}
+
+/* disabled state keeps square look */
+.btn-play[disabled],
+.icon-btn[disabled],
+.auto-btn[disabled] {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+/* If you have textual buttons inside the same container, ensure spacing doesn't collapse */
+.play-row { gap: 12px; align-items: center; }
+
+/* Optional: smaller squares on mobile */
+@media (max-width:480px){
+  :root { --main-icon-size: 44px; }
+  .btn-play i,
+  .icon-btn i,
+  .auto-btn i { font-size: 16px; }
+}
+
+  
 </style>
 </head>
 <body>
