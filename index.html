@@ -64,20 +64,31 @@ nav {
   gap: 8px;
 }
 
+/* --- Top navigation buttons (Tabs) --- */
 nav button {
-  border: none;
   background: transparent;
-  padding: 8px 12px;
-  border-radius: 10px;
+  border: 2px solid var(--muted-2);
+  color: var(--muted-2);
+  padding: 8px 14px;
+  border-radius: 12px;
   cursor: pointer;
-  color: #555;
   font-weight: 700;
+  transition: all 0.25s ease;
 }
 
-nav button.active {
-  background: #dfe4e7;
+nav button:hover {
+  background: rgba(0,0,0,0.03);
   color: #111;
+  filter: brightness(1.05);
 }
+
+/* Active tab */
+nav button.active {
+  border-color: var(--accent-green);
+  color: var(--accent-green);
+  background: rgba(76,175,80,0.08);
+}
+
 
 /* --- Text Input --- */
 input.word-input {
@@ -183,6 +194,27 @@ button[disabled],
   background: rgba(244,67,54,0.08);
 }
 
+/* --- Difficulty color logic --- */
+/* Easy = Green, Advanced = Yellow, Proficient = Red */
+.segmented button[data-val="easy"].on {
+  border-color: var(--accent-green);
+  color: var(--accent-green);
+  background: rgba(76,175,80,0.08);
+}
+
+.segmented button[data-val="advanced"].on {
+  border-color: var(--accent-yellow);
+  color: var(--accent-yellow);
+  background: rgba(255,193,7,0.08);
+}
+
+.segmented button[data-val="proficient"].on {
+  border-color: var(--accent-red);
+  color: var(--accent-red);
+  background: rgba(244,67,54,0.08);
+}
+
+  
 .auto-btn.checked {
   border-color: var(--accent-green);
   color: var(--accent-green);
@@ -199,9 +231,10 @@ button[disabled],
   justify-content: center;
 }
 
-.stats-wipe-btn:hover {
-  border-color: var(--accent-red);
-  color: var(--accent-red);
+.stats-wipe-btn:hover i {
+  color: var(--accent-red) !important;
+  transform: scale(1.08);
+  transition: color 0.15s ease, transform 0.15s ease;
 }
 
 /* --- Result Text --- */
