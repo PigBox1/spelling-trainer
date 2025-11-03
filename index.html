@@ -47,7 +47,7 @@ html, body {
   background: var(--card-bg);
   border-radius: var(--ui-radius);
   box-shadow: var(--shadow);
-  padding: 20px 18px; /* ALIGNMENT FIX: slightly tighten horizontal padding to align inner rows */
+  padding: 20px 20px; /* ALIGNMENT FIX: slightly tighten horizontal padding to align inner rows */
   box-sizing: border-box;
 }
 
@@ -539,7 +539,7 @@ button[disabled],
 
 /* --- Misc --- */
 .small {
-  font-size: 13px;
+  font-size: 12px;
   color: #666;
 }
 
@@ -560,17 +560,11 @@ button[disabled],
 
 .play-row input.word-input {
   flex: 1;
-  min-width: 0;
+  min-width: 75;
   margin-right: 0;
   border-radius: var(--ui-radius);
   border: var(--ui-border) solid var(--muted-2);
   box-sizing: border-box;
-}
-
-.play-row .result {
-  flex: 0 0 auto;
-  max-width: 100px;
-  text-align: right;
 }
 
 
